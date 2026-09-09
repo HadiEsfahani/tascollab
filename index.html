@@ -4,140 +4,361 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>How industry leaders are building with Supabase</title>
-  <meta name="description" content="Customer stories from Lovable, eXp Realty, Phoenix Energy, Chatbase, and Rally." />
-  <link rel="stylesheet" href="style.css" />
+  
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #121212;
+      --card-bg: #171717;
+      --card-bg-hover: #1c1c1c;
+      --card-active: #1f1f1f;
+      --border-color: #2e2e2e;
+      --border-active: #3ecf8e;
+      --text-main: #ededed;
+      --text-muted: #8e8e8e;
+      --brand-green: #3ecf8e;
+      --font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem 1.5rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    /* Section Header */
+    .section-header {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 2.5rem;
+      gap: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .section-header {
+        flex-direction: row;
+        align-items: flex-end;
+      }
+    }
+
+    .section-title {
+      font-size: 1.875rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+    }
+
+    .all-stories-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: color 0.2s ease;
+    }
+
+    .all-stories-link:hover {
+      color: var(--text-main);
+    }
+
+    /* Accordion Container */
+    .accordion-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 100%;
+    }
+
+    @media (min-width: 900px) {
+      .accordion-wrapper {
+        flex-direction: row;
+        height: 380px;
+      }
+    }
+
+    /* Individual Card Panel */
+    .panel {
+      position: relative;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      cursor: pointer;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Desktop flex sizing */
+    @media (min-width: 900px) {
+      .panel {
+        flex: 1;
+      }
+      .panel.active {
+        flex: 3.2;
+        background: var(--card-active);
+        border-color: rgba(62, 207, 142, 0.4);
+      }
+    }
+
+    .panel:hover:not(.active) {
+      background: var(--card-bg-hover);
+      border-color: #404040;
+    }
+
+    .panel-inner {
+      padding: 1.75rem;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* Header info inside each panel */
+    .company-header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .company-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .indicator-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      transition: background 0.3s ease;
+    }
+
+    .panel.active .indicator-dot {
+      background: var(--brand-green);
+      box-shadow: 0 0 8px rgba(62, 207, 142, 0.6);
+    }
+
+    .company-summary {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      font-weight: 400;
+    }
+
+    .panel.active .company-summary {
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    /* Extended Content (shows when active) */
+    .expanded-content {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: opacity 0.35s ease, max-height 0.35s ease;
+    }
+
+    .panel.active .expanded-content {
+      opacity: 1;
+      max-height: 300px;
+    }
+
+    /* Mobile handling for collapsed/expanded */
+    @media (max-width: 899px) {
+      .panel:not(.active) .expanded-content {
+        display: none;
+      }
+      .panel.active .expanded-content {
+        margin-top: 1.25rem;
+        opacity: 1;
+        max-height: none;
+      }
+    }
+
+    .quote {
+      font-size: 0.95rem;
+      color: #d1d5db;
+      line-height: 1.6;
+      border-left: 2px solid var(--border-color);
+      padding-left: 1rem;
+      font-style: italic;
+    }
+
+    .author {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .story-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: var(--brand-green);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-top: 0.5rem;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+      width: fit-content;
+    }
+
+    .story-link:hover {
+      opacity: 0.85;
+      transform: translateX(3px);
+    }
+  </style>
 </head>
 <body>
-  <main>
-    <section class="customer-stories" aria-labelledby="stories-heading">
-      <div class="container">
 
-        <div class="section-header">
-          <h1 class="stories-heading" id="stories-heading">
-            How industry leaders are <em>building</em> with Supabase
-          </h1>
-          <a class="more-stories" href="#">More customer stories</a>
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">How industry leaders are building with Supabase</h2>
+      <a href="#" class="all-stories-link">More customer stories &rarr;</a>
+    </div>
+
+    <div class="accordion-wrapper" id="accordion">
+      
+      <!-- 1. Lovable (Active by default) -->
+      <div class="panel active" data-index="0">
+        <div class="panel-inner">
+          <div class="company-header">
+            <div class="company-name">
+              <span class="indicator-dot"></span>
+              Lovable
+            </div>
+            <p class="company-summary">Powering millions of AI-generated apps with a complete Supabase backend.</p>
+          </div>
+          <div class="expanded-content">
+            <p class="quote">“Lovable is about unlocking creativity for anyone. Only 1% of the population knows how to code. Lovable has unlocked that ability for the other 99%.”</p>
+            <span class="author">Bryan Byrne, Product Manager, Lovable</span>
+            <a href="#" class="story-link">Read the story &rarr;</a>
+          </div>
         </div>
-
-        <ul class="accordion" id="customer-accordion">
-
-          <li class="accordion-item">
-            <button class="accordion-trigger" id="trigger-lovable" aria-expanded="false" aria-controls="panel-lovable">
-              <span class="trigger-text">
-                <span class="company-name">Lovable</span>
-                <span class="tagline">Powering millions of AI-generated apps with a complete Supabase backend.</span>
-              </span>
-              <svg class="chevron" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            </button>
-            <div class="accordion-panel" id="panel-lovable" role="region" aria-labelledby="trigger-lovable" aria-hidden="true">
-              <div class="panel-inner">
-                <blockquote>Lovable is about unlocking creativity for anyone. Only 1% of the population knows how to code. Lovable has unlocked that ability for the other 99%.</blockquote>
-                <p class="attribution">Bryan Byrne, Product Manager, Lovable</p>
-                <a class="read-story" href="#">Read the story <span aria-hidden="true">→</span></a>
-              </div>
-            </div>
-          </li>
-
-          <li class="accordion-item">
-            <button class="accordion-trigger" id="trigger-exp" aria-expanded="false" aria-controls="panel-exp">
-              <span class="trigger-text">
-                <span class="company-name">eXp Realty</span>
-                <span class="tagline">Empowering 2,000+ employees to build production software with AI.</span>
-              </span>
-              <svg class="chevron" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            </button>
-            <div class="accordion-panel" id="panel-exp" role="region" aria-labelledby="trigger-exp" aria-hidden="true">
-              <div class="panel-inner">
-                <blockquote>The thing that makes everything possible, all of our rapid development now and AI-generated or assisted development, is Supabase. That's the giant whose shoulders we can stand on.</blockquote>
-                <p class="attribution">Seth Siegler, Chief Innovation Officer, eXp Realty</p>
-                <a class="read-story" href="#">Read the story <span aria-hidden="true">→</span></a>
-              </div>
-            </div>
-          </li>
-
-          <li class="accordion-item">
-            <button class="accordion-trigger" id="trigger-phoenix" aria-expanded="false" aria-controls="panel-phoenix">
-              <span class="trigger-text">
-                <span class="company-name">Phoenix Energy</span>
-                <span class="tagline">Migrated critical infrastructure from MongoDB with zero downtime.</span>
-              </span>
-              <svg class="chevron" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            </button>
-            <div class="accordion-panel" id="panel-phoenix" role="region" aria-labelledby="trigger-phoenix" aria-hidden="true">
-              <div class="panel-inner">
-                <blockquote>We needed a system that could handle serious performance and security requirements — without slowing down our developers. Supabase has given us both.</blockquote>
-                <p class="attribution">Kris Woods, CTO, Phoenix Energy</p>
-                <a class="read-story" href="#">Read the story <span aria-hidden="true">→</span></a>
-              </div>
-            </div>
-          </li>
-
-          <li class="accordion-item">
-            <button class="accordion-trigger" id="trigger-chatbase" aria-expanded="false" aria-controls="panel-chatbase">
-              <span class="trigger-text">
-                <span class="company-name">Chatbase</span>
-                <span class="tagline">Scaled from zero to $10M ARR on a single Postgres-backed platform.</span>
-              </span>
-              <svg class="chevron" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            </button>
-            <div class="accordion-panel" id="panel-chatbase" role="region" aria-labelledby="trigger-chatbase" aria-hidden="true">
-              <div class="panel-inner">
-                <blockquote>Instead of splitting things out as we go, we try to consolidate things more as we do. The technology itself works better when you have things that are closely tied together. That's why we're on Supabase.</blockquote>
-                <p class="attribution">Yasser Elsaid, Founder and CEO, Chatbase</p>
-                <a class="read-story" href="#">Read the story <span aria-hidden="true">→</span></a>
-              </div>
-            </div>
-          </li>
-
-          <li class="accordion-item">
-            <button class="accordion-trigger" id="trigger-rally" aria-expanded="false" aria-controls="panel-rally">
-              <span class="trigger-text">
-                <span class="company-name">Rally</span>
-                <span class="tagline">From first line of code to fully licensed fintech in three months.</span>
-              </span>
-              <svg class="chevron" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            </button>
-            <div class="accordion-panel" id="panel-rally" role="region" aria-labelledby="trigger-rally" aria-hidden="true">
-              <div class="panel-inner">
-                <blockquote>We could not have built this company without Supabase. If I had to go and build all these components myself, we wouldn't even have launched.</blockquote>
-                <p class="attribution">Thiago Peres, Founder &amp; CTO, Rally</p>
-                <a class="read-story" href="#">Read the story <span aria-hidden="true">→</span></a>
-              </div>
-            </div>
-          </li>
-
-        </ul>
       </div>
-    </section>
-  </main>
+
+      <!-- 2. eXp Realty -->
+      <div class="panel" data-index="1">
+        <div class="panel-inner">
+          <div class="company-header">
+            <div class="company-name">
+              <span class="indicator-dot"></span>
+              eXp Realty
+            </div>
+            <p class="company-summary">Empowering 2,000+ employees to build production software with AI.</p>
+          </div>
+          <div class="expanded-content">
+            <p class="quote">“The thing that makes everything possible, all of our rapid development now and AI-generated or assisted development, is Supabase. That's the giant whose shoulders we can stand on.”</p>
+            <span class="author">Seth Siegler, Chief Innovation Officer, eXp Realty</span>
+            <a href="#" class="story-link">Read the story &rarr;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Phoenix Energy -->
+      <div class="panel" data-index="2">
+        <div class="panel-inner">
+          <div class="company-header">
+            <div class="company-name">
+              <span class="indicator-dot"></span>
+              Phoenix Energy
+            </div>
+            <p class="company-summary">Migrated critical infrastructure from MongoDB with zero downtime.</p>
+          </div>
+          <div class="expanded-content">
+            <p class="quote">“We needed a system that could handle serious performance and security requirements — without slowing down our developers. Supabase has given us both.”</p>
+            <span class="author">Kris Woods, CTO, Phoenix Energy</span>
+            <a href="#" class="story-link">Read the story &rarr;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Chatbase -->
+      <div class="panel" data-index="3">
+        <div class="panel-inner">
+          <div class="company-header">
+            <div class="company-name">
+              <span class="indicator-dot"></span>
+              Chatbase
+            </div>
+            <p class="company-summary">Scaled from zero to $10M ARR on a single Postgres-backed platform.</p>
+          </div>
+          <div class="expanded-content">
+            <p class="quote">“Instead of splitting things out as we go, we try to consolidate things more as we do. The technology itself works better when you have things that are closely tied together. That's why we're on Supabase.”</p>
+            <span class="author">Yasser Elsaid, Founder and CEO, Chatbase</span>
+            <a href="#" class="story-link">Read the story &rarr;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Rally -->
+      <div class="panel" data-index="4">
+        <div class="panel-inner">
+          <div class="company-header">
+            <div class="company-name">
+              <span class="indicator-dot"></span>
+              Rally
+            </div>
+            <p class="company-summary">From first line of code to fully licensed fintech in three months.</p>
+          </div>
+          <div class="expanded-content">
+            <p class="quote">“We could not have built this company without Supabase. If I had to go and build all these components myself, we wouldn't even have launched.”</p>
+            <span class="author">Thiago Peres, Founder & CTO, Rally</span>
+            <a href="#" class="story-link">Read the story &rarr;</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
 
   <script>
-    (function () {
-      var items = Array.prototype.slice.call(document.querySelectorAll('.accordion-item'));
+    const panels = document.querySelectorAll('.panel');
 
-      function closeItem(item) {
-        item.classList.remove('open');
-        item.querySelector('.accordion-trigger').setAttribute('aria-expanded', 'false');
-        item.querySelector('.accordion-panel').setAttribute('aria-hidden', 'true');
-        item.querySelector('.accordion-panel').style.maxHeight = null;
-      }
+    panels.forEach((panel) => {
+      panel.addEventListener('click', (e) => {
+        // Prevent click if clicking direct anchor link
+        if (e.target.tagName.toLowerCase() === 'a') return;
 
-      items.forEach(function (item) {
-        var trigger = item.querySelector('.accordion-trigger');
-        var panel = item.querySelector('.accordion-panel');
-
-        trigger.addEventListener('click', function () {
-          var isOpening = !item.classList.contains('open');
-          items.forEach(closeItem);
-          if (isOpening) {
-            item.classList.add('open');
-            trigger.setAttribute('aria-expanded', 'true');
-            panel.setAttribute('aria-hidden', 'false');
-            panel.style.maxHeight = panel.scrollHeight + 'px';
-          }
-        });
+        // Remove active class from all and assign to clicked panel
+        panels.forEach((p) => p.classList.remove('active'));
+        panel.classList.add('active');
       });
-    })();
+    });
   </script>
 </body>
 </html>
