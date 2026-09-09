@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Engineering Initiatives</title>
+  <title>Projects Showcase | Open Innovation</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,10 +11,10 @@
 
   <style>
     :root {
-      --bg-dark: #09090b;
-      --card-bg: rgba(18, 18, 22, 0.75);
-      --card-bg-active: rgba(20, 20, 26, 0.85);
-      --border: #22222a;
+      --bg-dark: #0a0a0d;
+      --card-bg: rgba(18, 18, 22, 0.72);
+      --card-bg-active: rgba(20, 20, 26, 0.88);
+      --border: #23232c;
       --brand: #3ecf8e;
       --brand-glow: rgba(62, 207, 142, 0.15);
       --text-main: #f4f4f5;
@@ -48,7 +48,7 @@
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 1.2rem;
+      gap: 1rem;
     }
 
     /* Minimal Top Header */
@@ -59,7 +59,7 @@
     }
     .header-tag {
       font-family: var(--font-mono);
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       color: var(--brand);
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -67,20 +67,20 @@
       margin-bottom: 0.2rem;
     }
     .header h1 {
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       font-weight: 700;
       letter-spacing: -0.02em;
       color: #fff;
     }
     .header p {
       color: var(--text-muted);
-      font-size: 0.8rem;
-      max-width: 500px;
+      font-size: 0.78rem;
+      max-width: 480px;
       line-height: 1.4;
       text-align: right;
     }
 
-    /* Accordion Container - Sized to prevent page scroll */
+    /* Accordion Container - Viewport Fitted */
     .accordion {
       display: flex;
       flex-direction: column;
@@ -113,10 +113,10 @@
 
     @media (min-width: 900px) {
       .panel {
-        flex: 0.9;
+        flex: 0.85;
       }
       .panel.active {
-        flex: 3.6;
+        flex: 3.5;
         cursor: default;
         background: var(--card-bg-active);
         border-color: rgba(62, 207, 142, 0.4);
@@ -124,14 +124,14 @@
       }
     }
 
-    /* Progress Tracker (Left edge) */
+    /* Vertical Progress Bar */
     .progress-bar-track {
       position: absolute;
       left: 0;
       top: 0;
       bottom: 0;
       width: 3px;
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.06);
       z-index: 10;
     }
     .progress-bar-fill {
@@ -140,29 +140,29 @@
       bottom: 0;
       width: 100%;
       background: var(--brand);
-      box-shadow: 0 0 6px var(--brand);
+      box-shadow: 0 0 8px var(--brand);
       transition: height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* Background image with higher visibility */
+    /* Background Artwork */
     .panel-backdrop {
       position: absolute;
       inset: 0;
       background-size: cover;
       background-position: center;
-      opacity: 0.14;
+      opacity: 0.18;
       transition: opacity 0.4s ease, transform 0.6s ease;
       z-index: 1;
     }
     .panel:hover .panel-backdrop {
-      opacity: 0.22;
+      opacity: 0.28;
     }
     .panel.active .panel-backdrop {
-      opacity: 0.28;
+      opacity: 0.32;
       transform: scale(1.02);
     }
 
-    /* Card Content Area */
+    /* Card Inner Layout */
     .panel-inner {
       position: relative;
       z-index: 2;
@@ -173,7 +173,7 @@
       justify-content: space-between;
     }
 
-    /* Header states: Stacked when collapsed, Row when expanded */
+    /* Collapsed State: Stacked icon on top, name underneath */
     .panel-header {
       display: flex;
       flex-direction: column;
@@ -183,6 +183,7 @@
       transition: all 0.3s ease;
     }
     
+    /* Expanded State: Horizontal Row */
     .panel.active .panel-header {
       flex-direction: row;
       text-align: left;
@@ -191,8 +192,8 @@
     }
 
     .project-badge {
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       border-radius: 8px;
       background: #181820;
       border: 1px solid var(--border);
@@ -207,7 +208,7 @@
     }
     
     .project-title {
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       font-weight: 600;
       color: #fff;
       letter-spacing: -0.01em;
@@ -225,7 +226,7 @@
       font-size: 0.68rem;
       color: var(--brand);
       background: var(--brand-glow);
-      padding: 2px 6px;
+      padding: 2px 7px;
       border-radius: 4px;
       font-weight: 500;
     }
@@ -233,11 +234,11 @@
       display: inline-block;
     }
 
-    /* Expanded Details: Compact sizing */
+    /* Expanded Details Area */
     .expanded-body {
       display: none;
       flex-direction: column;
-      gap: 0.85rem;
+      gap: 0.75rem;
       margin-top: auto;
     }
     .panel.active .expanded-body {
@@ -245,21 +246,21 @@
     }
 
     .project-description {
-      font-size: 0.8rem;
-      line-height: 1.45;
+      font-size: 0.78rem;
+      line-height: 1.4;
       color: #b5b5c2;
-      max-width: 85%;
+      max-width: 88%;
       background: rgba(9, 9, 11, 0.45);
       padding: 0.5rem 0.75rem;
       border-radius: 6px;
-      border: 1px solid rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.04);
     }
 
-    /* Minimal Thin Telemetry Strip */
+    /* Telemetry / Metrics Grid */
     .telemetry-strip {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-      background: rgba(10, 10, 14, 0.7);
+      background: rgba(10, 10, 14, 0.65);
       border: 1px solid var(--border);
       border-radius: 6px;
       padding: 0.45rem 0.75rem;
@@ -271,7 +272,7 @@
       gap: 0.1rem;
     }
     .telemetry-label {
-      font-size: 0.62rem;
+      font-size: 0.6rem;
       font-family: var(--font-mono);
       text-transform: uppercase;
       color: var(--text-dim);
@@ -287,15 +288,15 @@
       color: var(--brand);
     }
 
-    /* Actions Row */
+    /* Action Row */
     .action-row {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
       gap: 0.5rem;
-      padding-top: 0.65rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 0.6rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
     }
 
     .btn-donate {
@@ -303,7 +304,7 @@
       color: #08080a;
       font-weight: 600;
       font-size: 0.75rem;
-      padding: 0.4rem 0.8rem;
+      padding: 0.4rem 0.85rem;
       border-radius: 5px;
       border: none;
       cursor: pointer;
@@ -318,7 +319,7 @@
     }
 
     .dashboard-anchor {
-      font-size: 0.75rem;
+      font-size: 0.74rem;
       color: var(--text-muted);
       text-decoration: none;
       display: inline-flex;
@@ -330,7 +331,7 @@
       color: var(--brand);
     }
 
-    /* Modal Layer */
+    /* Modal Styling */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -354,7 +355,7 @@
       padding: 1.3rem;
       display: flex;
       flex-direction: column;
-      gap: 0.9rem;
+      gap: 0.85rem;
       box-shadow: 0 20px 40px rgba(0,0,0,0.6);
     }
     .modal-card h3 {
@@ -362,7 +363,7 @@
       color: #fff;
     }
     .modal-card p {
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       color: var(--text-muted);
       line-height: 1.4;
     }
@@ -379,7 +380,7 @@
     }
     .wallet-address-text {
       font-family: var(--font-mono);
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       color: var(--brand);
       overflow: hidden;
       text-overflow: ellipsis;
@@ -404,7 +405,7 @@
       gap: 0.25rem;
     }
     .form-field label {
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       color: var(--text-muted);
       font-family: var(--font-mono);
     }
@@ -425,7 +426,7 @@
       display: flex;
       justify-content: flex-end;
       gap: 0.5rem;
-      margin-top: 0.3rem;
+      margin-top: 0.25rem;
     }
     .btn-cancel {
       background: transparent;
@@ -446,7 +447,7 @@
         <span class="header-tag">// R&D Open Registry</span>
         <h1>Active Initiatives</h1>
       </div>
-      <p>Select any initiative below to review metrics, contribute directly via PAC, or visit its task dashboard.</p>
+      <p>Select any initiative below to review telemetry, submit donations with your nickname, or open the dashboard.</p>
     </div>
 
     <!-- ACCORDION -->
@@ -472,11 +473,11 @@
             <div class="telemetry-strip">
               <div class="telemetry-item">
                 <span class="telemetry-label">Donated</span>
-                <span class="telemetry-value highlight">14,250 PAC</span>
+                <span class="telemetry-value highlight" id="stat-ecoro">14,250 PAC</span>
               </div>
               <div class="telemetry-item">
                 <span class="telemetry-label">Top Donator</span>
-                <span class="telemetry-value">@vanguard</span>
+                <span class="telemetry-value" id="top-ecoro">@vanguard</span>
               </div>
               <div class="telemetry-item">
                 <span class="telemetry-label">Status</span>
@@ -489,7 +490,7 @@
             </div>
 
             <div class="action-row">
-              <button class="btn-donate" onclick="openDonateModal('E-CORO', 'PAC-78F9-99E2-ECORO-DEV')">
+              <button class="btn-donate" onclick="openDonateModal('E-CORO', 'PAC-78F9-99E2-ECORO-DEV', 'stat-ecoro', 'top-ecoro')">
                 <span>🪙</span> Donate PAC
               </button>
               <a href="https://ecoro.domain.com" target="_blank" class="dashboard-anchor">
@@ -500,79 +501,31 @@
         </div>
       </div>
 
-      <!-- 2: AERO-CORE -->
-      <div class="panel" data-progress="42" data-wallet="PAC-44A1-88D3-AERO-FRAME" data-project="AERO-CORE">
-        <div class="progress-bar-track"><div class="progress-bar-fill" style="height: 42%;"></div></div>
-        <div class="panel-backdrop" style="background-image: url('https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=1200&q=80');"></div>
-
-        <div class="panel-inner">
-          <div class="panel-header">
-            <div class="project-badge">AC</div>
-            <div class="project-title">AERO-CORE</div>
-            <span class="progress-tag">42% COMPLETE</span>
-          </div>
-
-          <div class="expanded-body">
-            <p class="project-description">
-              Computational fluid dynamics (CFD) optimization and ultra-low drag shell for velomobiles.
-            </p>
-
-            <div class="telemetry-strip">
-              <div class="telemetry-item">
-                <span class="telemetry-label">Donated</span>
-                <span class="telemetry-value highlight">6,800 PAC</span>
-              </div>
-              <div class="telemetry-item">
-                <span class="telemetry-label">Top Donator</span>
-                <span class="telemetry-value">@aerolabs</span>
-              </div>
-              <div class="telemetry-item">
-                <span class="telemetry-label">Status</span>
-                <span class="telemetry-value">Simulations</span>
-              </div>
-              <div class="telemetry-item">
-                <span class="telemetry-label">Started</span>
-                <span class="telemetry-value">Feb 2026</span>
-              </div>
-            </div>
-
-            <div class="action-row">
-              <button class="btn-donate" onclick="openDonateModal('AERO-CORE', 'PAC-44A1-88D3-AERO-FRAME')">
-                <span>🪙</span> Donate PAC
-              </button>
-              <a href="#" class="dashboard-anchor">
-                Open Dashboard &rarr;
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 3: NEXUS-BMS -->
-      <div class="panel" data-progress="85" data-wallet="PAC-99B2-22C4-NEXUS-FIRM" data-project="NEXUS-BMS">
-        <div class="progress-bar-track"><div class="progress-bar-fill" style="height: 85%;"></div></div>
+      <!-- 2: NEXUS-OS -->
+      <div class="panel" data-progress="45" data-wallet="PAC-99B2-22C4-NEXUS-FIRM" data-project="NEXUS-OS">
+        <div class="progress-bar-track"><div class="progress-bar-fill" style="height: 45%;"></div></div>
         <div class="panel-backdrop" style="background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80');"></div>
 
         <div class="panel-inner">
           <div class="panel-header">
             <div class="project-badge">NX</div>
-            <div class="project-title">NEXUS-BMS</div>
-            <span class="progress-tag">85% COMPLETE</span>
+            <div class="project-title">NEXUS-OS</div>
+            <span class="progress-tag">45% COMPLETE</span>
           </div>
 
           <div class="expanded-body">
             <p class="project-description">
-              CAN-bus integrated open battery management firmware with real-time cell balancing.
+              CAN-bus telemetry management firmware for real-time multicell battery balancing and speed sync.
             </p>
 
             <div class="telemetry-strip">
               <div class="telemetry-item">
                 <span class="telemetry-label">Donated</span>
-                <span class="telemetry-value highlight">21,400 PAC</span>
+                <span class="telemetry-value highlight" id="stat-nexus">8,400 PAC</span>
               </div>
               <div class="telemetry-item">
                 <span class="telemetry-label">Top Donator</span>
-                <span class="telemetry-value">@volt_master</span>
+                <span class="telemetry-value" id="top-nexus">@volt_master</span>
               </div>
               <div class="telemetry-item">
                 <span class="telemetry-label">Status</span>
@@ -585,7 +538,7 @@
             </div>
 
             <div class="action-row">
-              <button class="btn-donate" onclick="openDonateModal('NEXUS-BMS', 'PAC-99B2-22C4-NEXUS-FIRM')">
+              <button class="btn-donate" onclick="openDonateModal('NEXUS-OS', 'PAC-99B2-22C4-NEXUS-FIRM', 'stat-nexus', 'top-nexus')">
                 <span>🪙</span> Donate PAC
               </button>
               <a href="#" class="dashboard-anchor">
@@ -596,31 +549,31 @@
         </div>
       </div>
 
-      <!-- 4: VOLT-KINETIC -->
-      <div class="panel" data-progress="20" data-wallet="PAC-12K8-66Z1-KINETIC-DRIVE" data-project="VOLT-KINETIC">
-        <div class="progress-bar-track"><div class="progress-bar-fill" style="height: 20%;"></div></div>
+      <!-- 3: VOLT-ROUTING -->
+      <div class="panel" data-progress="25" data-wallet="PAC-12K8-66Z1-KINETIC-DRIVE" data-project="VOLT-ROUTING">
+        <div class="progress-bar-track"><div class="progress-bar-fill" style="height: 25%;"></div></div>
         <div class="panel-backdrop" style="background-image: url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1200&q=80');"></div>
 
         <div class="panel-inner">
           <div class="panel-header">
-            <div class="project-badge">VK</div>
-            <div class="project-title">VOLT-KINETIC</div>
-            <span class="progress-tag">20% COMPLETE</span>
+            <div class="project-badge">VR</div>
+            <div class="project-title">VOLT-ROUTING</div>
+            <span class="progress-tag">25% COMPLETE</span>
           </div>
 
           <div class="expanded-body">
             <p class="project-description">
-              Electronic generator gearbox delivering stepless electronic cadence and regenerative braking.
+              Adaptive power routing matrix with stepless electronic cadence and regenerative motor braking.
             </p>
 
             <div class="telemetry-strip">
               <div class="telemetry-item">
                 <span class="telemetry-label">Donated</span>
-                <span class="telemetry-value highlight">3,120 PAC</span>
+                <span class="telemetry-value highlight" id="stat-volt">3,120 PAC</span>
               </div>
               <div class="telemetry-item">
                 <span class="telemetry-label">Top Donator</span>
-                <span class="telemetry-value">@pedal_dev</span>
+                <span class="telemetry-value" id="top-volt">@pedal_dev</span>
               </div>
               <div class="telemetry-item">
                 <span class="telemetry-label">Status</span>
@@ -633,7 +586,55 @@
             </div>
 
             <div class="action-row">
-              <button class="btn-donate" onclick="openDonateModal('VOLT-KINETIC', 'PAC-12K8-66Z1-KINETIC-DRIVE')">
+              <button class="btn-donate" onclick="openDonateModal('VOLT-ROUTING', 'PAC-12K8-66Z1-KINETIC-DRIVE', 'stat-volt', 'top-volt')">
+                <span>🪙</span> Donate PAC
+              </button>
+              <a href="#" class="dashboard-anchor">
+                Open Dashboard &rarr;
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4: AERO-CORE -->
+      <div class="panel" data-progress="50" data-wallet="PAC-44A1-88D3-AERO-FRAME" data-project="AERO-CORE">
+        <div class="progress-bar-track"><div class="progress-bar-fill" style="height: 50%;"></div></div>
+        <div class="panel-backdrop" style="background-image: url('https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=1200&q=80');"></div>
+
+        <div class="panel-inner">
+          <div class="panel-header">
+            <div class="project-badge">AC</div>
+            <div class="project-title">AERO-CORE</div>
+            <span class="progress-tag">50% COMPLETE</span>
+          </div>
+
+          <div class="expanded-body">
+            <p class="project-description">
+              Computational fluid dynamics (CFD) aerodynamic shell designed for minimal drag and crosswind stability.
+            </p>
+
+            <div class="telemetry-strip">
+              <div class="telemetry-item">
+                <span class="telemetry-label">Donated</span>
+                <span class="telemetry-value highlight" id="stat-aero">9,800 PAC</span>
+              </div>
+              <div class="telemetry-item">
+                <span class="telemetry-label">Top Donator</span>
+                <span class="telemetry-value" id="top-aero">@aerolabs</span>
+              </div>
+              <div class="telemetry-item">
+                <span class="telemetry-label">Status</span>
+                <span class="telemetry-value">Wind Tunnel</span>
+              </div>
+              <div class="telemetry-item">
+                <span class="telemetry-label">Started</span>
+                <span class="telemetry-value">Feb 2026</span>
+              </div>
+            </div>
+
+            <div class="action-row">
+              <button class="btn-donate" onclick="openDonateModal('AERO-CORE', 'PAC-44A1-88D3-AERO-FRAME', 'stat-aero', 'top-aero')">
                 <span>🪙</span> Donate PAC
               </button>
               <a href="#" class="dashboard-anchor">
@@ -652,7 +653,7 @@
     <div class="modal-card">
       <div>
         <h3 id="modalProjectName">Support Project</h3>
-        <p>Send PAC to the project address and log your handle for leaderboard recognition.</p>
+        <p>Send PAC to the wallet below, then log your handle so your contribution is recorded.</p>
       </div>
 
       <div class="wallet-box">
@@ -662,12 +663,12 @@
 
       <div class="form-field">
         <label>YOUR NICKNAME / HANDLE</label>
-        <input type="text" id="donorNickname" placeholder="e.g. @donor" required />
+        <input type="text" id="donorNickname" placeholder="e.g. @satoshi" required />
       </div>
 
       <div class="form-field">
         <label>DONATED AMOUNT (PAC)</label>
-        <input type="number" id="donorAmount" placeholder="e.g. 500" />
+        <input type="number" id="donorAmount" placeholder="e.g. 500" required />
       </div>
 
       <div class="form-field">
@@ -677,7 +678,7 @@
 
       <div class="modal-buttons">
         <button class="btn-cancel" onclick="closeDonateModal()">Cancel</button>
-        <button class="btn-donate" onclick="recordDonation()">Register</button>
+        <button class="btn-donate" onclick="recordDonation()">Submit</button>
       </div>
     </div>
   </div>
@@ -693,16 +694,20 @@
       });
     });
 
-    // Donation Modal
+    // Donation Modal & Donor State Tracking
     const modal = document.getElementById('donateModal');
     const modalTitle = document.getElementById('modalProjectName');
     const modalWallet = document.getElementById('modalWalletAddr');
     let currentWallet = '';
+    let currentTotalElId = '';
+    let currentTopElId = '';
 
-    function openDonateModal(projectName, walletAddress) {
+    function openDonateModal(projectName, walletAddress, totalStatId, topStatId) {
       modalTitle.innerText = `Support ${projectName}`;
       modalWallet.innerText = walletAddress;
       currentWallet = walletAddress;
+      currentTotalElId = totalStatId;
+      currentTopElId = topStatId;
       modal.classList.add('open');
     }
 
@@ -723,14 +728,23 @@
 
     function recordDonation() {
       const handle = document.getElementById('donorNickname').value.trim();
-      const amount = document.getElementById('donorAmount').value.trim();
+      const amount = parseFloat(document.getElementById('donorAmount').value.trim());
 
-      if (!handle || !amount) {
-        alert("Please provide both your nickname and donation amount.");
+      if (!handle || isNaN(amount) || amount <= 0) {
+        alert("Please enter a valid nickname and donation amount.");
         return;
       }
-      
-      alert(`Thank you ${handle}! Your donation of ${amount} PAC has been registered.`);
+
+      // Dynamic local update of project telemetry
+      if (currentTotalElId) {
+        const totalEl = document.getElementById(currentTotalElId);
+        if (totalEl) {
+          const currentTotal = parseInt(totalEl.innerText.replace(/[^0-9]/g, '')) || 0;
+          totalEl.innerText = `${(currentTotal + amount).toLocaleString()} PAC`;
+        }
+      }
+
+      alert(`Thank you ${handle}! Your contribution of ${amount.toLocaleString()} PAC has been recorded.`);
       closeDonateModal();
     }
   </script>
