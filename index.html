@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>How industry leaders are building — Accordion Cards Demo</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <main class="wrap">
+    <header class="section-head">
+      <h2>How industry leaders<br />are building with Supabase</h2>
+      <a class="more-link" href="#" onclick="return false;">More customer stories →</a>
+    </header>
+
+    <div class="accordion" id="accordion">
+
+      <!-- Card 1 -->
+      <div class="card is-open" data-index="0">
+        <button class="card-toggle" type="button">
+          <span class="logo logo--lovable" aria-hidden="true">L</span>
+          <span class="company-name">Lovable</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="card-panel">
+          <div class="panel-inner">
+            <p class="headline">Powering millions of AI-generated apps with a complete Supabase backend.</p>
+            <blockquote class="quote">
+              "Lovable is about unlocking creativity for anyone. Only 1% of the population knows how to code. Lovable has unlocked that ability for the other 99%."
+            </blockquote>
+            <div class="person">
+              <span class="avatar">BB</span>
+              <span class="person-name">Bryan Byrne, Product Manager, Lovable</span>
+            </div>
+            <a class="story-link" href="#" onclick="return false;">Read the story →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="card" data-index="1">
+        <button class="card-toggle" type="button">
+          <span class="logo logo--exp" aria-hidden="true">X</span>
+          <span class="company-name">eXp Realty</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="card-panel">
+          <div class="panel-inner">
+            <p class="headline">Empowering 2,000+ employees to build production software with AI.</p>
+            <blockquote class="quote">
+              "The thing that makes everything possible, all of our rapid development now and AI-generated or assisted development, is Supabase. That's the giant whose shoulders we can stand on."
+            </blockquote>
+            <div class="person">
+              <span class="avatar">SS</span>
+              <span class="person-name">Seth Siegler, Chief Innovation Officer, eXp Realty</span>
+            </div>
+            <a class="story-link" href="#" onclick="return false;">Read the story →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="card" data-index="2">
+        <button class="card-toggle" type="button">
+          <span class="logo logo--phoenix" aria-hidden="true">P</span>
+          <span class="company-name">Phoenix Energy</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="card-panel">
+          <div class="panel-inner">
+            <p class="headline">Migrated critical infrastructure from MongoDB with zero downtime.</p>
+            <blockquote class="quote">
+              "We needed a system that could handle serious performance and security requirements — without slowing down our developers. Supabase has given us both."
+            </blockquote>
+            <div class="person">
+              <span class="avatar">KW</span>
+              <span class="person-name">Kris Woods, CTO, Phoenix Energy</span>
+            </div>
+            <a class="story-link" href="#" onclick="return false;">Read the story →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="card" data-index="3">
+        <button class="card-toggle" type="button">
+          <span class="logo logo--chatbase" aria-hidden="true">C</span>
+          <span class="company-name">Chatbase</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="card-panel">
+          <div class="panel-inner">
+            <p class="headline">Scaled from zero to $10M ARR on a single Postgres-backed platform.</p>
+            <blockquote class="quote">
+              "Instead of splitting things out as we go, we try to consolidate things more as we do. The technology itself works better when you have things that are closely tied together. That's why we're on Supabase."
+            </blockquote>
+            <div class="person">
+              <span class="avatar">YE</span>
+              <span class="person-name">Yasser Elsaid, Founder and CEO, Chatbase</span>
+            </div>
+            <a class="story-link" href="#" onclick="return false;">Read the story →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="card" data-index="4">
+        <button class="card-toggle" type="button">
+          <span class="logo logo--rally" aria-hidden="true">R</span>
+          <span class="company-name">Rally</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="card-panel">
+          <div class="panel-inner">
+            <p class="headline">From first line of code to fully licensed fintech in three months.</p>
+            <blockquote class="quote">
+              "We could not have built this company without Supabase. If I had to go and build all these components myself, we wouldn't even have launched."
+            </blockquote>
+            <div class="person">
+              <span class="avatar">TP</span>
+              <span class="person-name">Thiago Peres, Founder &amp; CTO, Rally</span>
+            </div>
+            <a class="story-link" href="#" onclick="return false;">Read the story →</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
