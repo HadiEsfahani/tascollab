@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Projects Showcase | Open Innovation</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,7 +21,7 @@
       --text-muted: #9ca3af;
       --brand-green: #3ecf8e;
       --brand-green-glow: rgba(62, 207, 142, 0.25);
-      --font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
     }
 
@@ -38,35 +38,32 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
       padding: 2.5rem 1.25rem;
     }
 
     .container {
-      width: 100%;
       max-width: 1280px;
+      width: 100%;
     }
 
+    /* Header */
     .header {
       margin-bottom: 2rem;
-      text-align: center;
     }
-
     .header h1 {
       font-size: 2rem;
       font-weight: 800;
-      color: #ffffff;
       letter-spacing: -0.03em;
-      margin-bottom: 0.5rem;
+      color: #fff;
     }
-
     .header p {
       color: var(--text-muted);
+      margin-top: 0.35rem;
       font-size: 0.95rem;
     }
 
-    /* Accordion Container - Height reduced by 5% (620px -> 589px) */
+    /* Accordion Container */
     .accordion {
       display: flex;
       flex-direction: column;
@@ -77,74 +74,72 @@
     @media (min-width: 992px) {
       .accordion {
         flex-direction: row;
-        height: 589px;
+        height: 620px;
       }
     }
 
-    /* Individual Card Panel */
+    /* Card / Panel */
     .panel {
       position: relative;
-      background-color: var(--card-bg);
+      background: var(--card-bg);
       border: 1px solid var(--border-color);
       border-radius: 14px;
       cursor: pointer;
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      transition: flex 0.45s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease, border-color 0.3s ease;
+      transition: flex 0.45s cubic-bezier(0.16, 1, 0.3, 1), 
+                  background 0.3s ease, 
+                  border-color 0.3s ease;
     }
 
     @media (min-width: 992px) {
       .panel {
         flex: 1;
       }
-      
       .panel.active {
         flex: 4.5;
         cursor: default;
-        background-color: var(--card-active);
         border-color: rgba(62, 207, 142, 0.5);
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.5);
       }
     }
 
-    /* Progress Tracker Bar on Left Edge */
+    /* Vertical Progress Bar on very left edge */
     .progress-track {
       position: absolute;
-      top: 0;
       left: 0;
+      top: 0;
+      bottom: 0;
       width: 5px;
-      height: 100%;
       background: rgba(255, 255, 255, 0.08);
       z-index: 10;
     }
-
     .progress-fill {
       position: absolute;
-      bottom: 0;
       left: 0;
+      bottom: 0;
       width: 100%;
       background: var(--brand-green);
       box-shadow: 0 0 10px var(--brand-green);
       transition: height 0.6s ease;
     }
 
-    /* Background image layer */
+    /* Background image layer for active card */
     .panel-bg {
       position: absolute;
       inset: 0;
       background-size: cover;
       background-position: center;
       opacity: 0;
-      transition: opacity 0.4s ease;
+      transition: opacity 0.5s ease;
       z-index: 1;
     }
-
     .panel.active .panel-bg {
-      opacity: 0.12;
+      opacity: 0.12; /* Subtle background graphic */
     }
 
-    /* Content Layout */
+    /* Panel Content Container */
     .panel-content {
       position: relative;
       z-index: 2;
@@ -156,31 +151,11 @@
       overflow-y: auto;
     }
 
-    /* Header in Panel */
+    /* Collapsed Header & Logo */
     .panel-header {
       display: flex;
       align-items: center;
       gap: 0.75rem;
-    }
-
-    /* Collapsed state adjustments: only logo and title underneath */
-    .panel:not(.active) .panel-content {
-      padding: 1.5rem 1rem 1.5rem 1.5rem;
-      justify-content: flex-start;
-      align-items: center;
-    }
-
-    .panel:not(.active) .panel-header {
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 0.75rem;
-      width: 100%;
-      margin-top: 1rem;
-    }
-
-    .panel:not(.active) .collapsed-indicator {
-      display: none !important;
     }
 
     .project-logo-badge {
@@ -193,8 +168,8 @@
       align-items: center;
       justify-content: center;
       font-weight: 700;
-      color: var(--brand-green);
       font-size: 1rem;
+      color: var(--brand-green);
       flex-shrink: 0;
     }
 
@@ -204,30 +179,22 @@
       color: #fff;
     }
 
-    .panel:not(.active) .project-title {
-      font-size: 1rem;
-      word-break: break-word;
-    }
-
     .collapsed-indicator {
-      font-family: var(--font-mono);
       font-size: 0.75rem;
       color: var(--brand-green);
       background: rgba(62, 207, 142, 0.1);
-      padding: 0.25rem 0.5rem;
+      padding: 2px 8px;
       border-radius: 12px;
       margin-left: auto;
+      font-family: var(--font-mono);
     }
 
-    /* Expanded Content scaled down 10% and anchored to lower half */
+    /* Expanded Details View */
     .details-view {
       display: none;
       flex-direction: column;
-      gap: 1.1rem;
-      margin-top: auto;
-      transform: scale(0.9);
-      transform-origin: bottom left;
-      width: 111.11%; /* offsets scale(0.9) to utilize full panel width */
+      gap: 1.25rem;
+      margin-top: 1.25rem;
     }
 
     .panel.active .details-view {
@@ -246,45 +213,37 @@
       grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
       gap: 0.75rem;
       background: rgba(0, 0, 0, 0.3);
-      padding: 1rem;
+      padding: 0.85rem;
       border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
     }
-
     .metric-card {
       display: flex;
       flex-direction: column;
-      gap: 0.25rem;
+      gap: 0.2rem;
     }
-
     .metric-label {
-      font-size: 0.75rem;
-      color: var(--text-muted);
+      font-size: 0.72rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
+      color: var(--text-muted);
     }
-
     .metric-value {
-      font-size: 1.1rem;
-      font-weight: 700;
-      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 600;
       color: #fff;
+      font-family: var(--font-mono);
     }
 
-    .metric-value.highlight {
-      color: var(--brand-green);
-    }
-
-    /* Actions: Donation & Contribution */
+    /* Actions Section (Donate + Contribute) */
     .actions-section {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 0.75rem;
+      gap: 1rem;
     }
-
-    @media (min-width: 640px) {
+    @media(min-width: 640px) {
       .actions-section {
-        grid-template-columns: 1.3fr 1fr;
+        grid-template-columns: 1fr 1fr;
       }
     }
 
@@ -292,48 +251,402 @@
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid var(--border-color);
       border-radius: 8px;
-      padding: 0.75rem 1rem;
+      padding: 0.85rem;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      gap: 0.5rem;
+    }
+    .action-box h4 {
+      font-size: 0.85rem;
+      color: #fff;
+      display: flex;
+      align-items: center;
       gap: 0.4rem;
     }
 
+    /* Wallet Bar */
     .wallet-bar {
       display: flex;
       align-items: center;
-      background: #111115;
-      border: 1px dashed #3a3a46;
+      background: #0d0d10;
+      border: 1px solid #2a2a34;
       border-radius: 6px;
-      padding: 0.4rem 0.6rem;
+      padding: 0.35rem 0.6rem;
       gap: 0.5rem;
     }
-
     .wallet-address {
       font-family: var(--font-mono);
-      font-size: 0.8rem;
-      color: var(--brand-green);
+      font-size: 0.75rem;
+      color: #3ecf8e;
+      white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap;
       flex: 1;
     }
-
-    .btn-copy {
-      background: #272732;
+    .copy-btn {
+      background: #252530;
       border: none;
       color: #fff;
-      font-size: 0.75rem;
-      padding: 0.25rem 0.5rem;
+      font-size: 0.7rem;
+      padding: 4px 8px;
       border-radius: 4px;
       cursor: pointer;
       transition: background 0.2s;
     }
-
-    .btn-copy:hover {
-      background: #373746;
+    .copy-btn:hover {
+      background: #353545;
     }
 
-    .btn-action {
+    /* Contribution Form & Comments */
+    .btn-contribute {
       background: var(--brand-green);
-      color: #
+      color: #000;
+      font-weight: 600;
+      font-size: 0.8rem;
+      border: none;
+      padding: 0.45rem 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+      transition: opacity 0.2s;
+    }
+    .btn-contribute:hover {
+      opacity: 0.9;
+    }
+
+    /* Feed of Contributions */
+    .contributions-feed {
+      margin-top: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-height: 120px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .contribution-item {
+      background: #111115;
+      border-left: 2px solid var(--brand-green);
+      padding: 0.4rem 0.6rem;
+      border-radius: 0 4px 4px 0;
+      font-size: 0.75rem;
+    }
+    .contribution-meta {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      margin-bottom: 2px;
+    }
+    .admin-reply {
+      margin-top: 4px;
+      padding-top: 4px;
+      border-top: 1px dashed #2a2a34;
+      color: #3ecf8e;
+    }
+
+    /* Bottom Link: Project Dashboard */
+    .dashboard-link-container {
+      margin-top: 1rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+    }
+    .dashboard-link {
+      color: var(--brand-green);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: transform 0.2s;
+    }
+    .dashboard-link:hover {
+      transform: translateX(4px);
+    }
+
+    /* Modal for Submitting Contribution */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 1rem;
+    }
+    .modal-overlay.open {
+      display: flex;
+    }
+    .modal {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .modal h3 {
+      font-size: 1.15rem;
+      color: #fff;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .form-group label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .form-group input, .form-group textarea {
+      background: #0d0d10;
+      border: 1px solid var(--border-color);
+      color: #fff;
+      padding: 0.5rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-family: inherit;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--brand-green);
+    }
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+    }
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: #fff;
+      padding: 0.45rem 0.85rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>Active Projects & Innovation Lab</h1>
+      <p>Explore work-in-progress hardware & software initiatives. Contribute insights or donate to earn PAC rewards.</p>
+    </div>
+
+    <div class="accordion" id="projectAccordion">
+      
+      <!-- PROJECT 1: E-CORO (ACTIVE BY DEFAULT) -->
+      <!-- Change data-progress="65" to set completion from 0 to 100 -->
+      <div class="panel active" data-progress="65">
+        <!-- Left vertical progress bar -->
+        <div class="progress-track"><div class="progress-fill" style="height: 65%;"></div></div>
+        
+        <!-- Product Background Graphic (Minimal SVG / Product silhouette) -->
+        <div class="panel-bg" style="background-image: url('https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=1200&q=80');"></div>
+
+        <div class="panel-content">
+          <!-- Header -->
+          <div class="panel-header">
+            <div class="project-logo-badge">EC</div>
+            <div>
+              <h2 class="project-title">E-CORO</h2>
+            </div>
+            <span class="collapsed-indicator">65% DONE</span>
+          </div>
+
+          <!-- Expanded Body -->
+          <div class="details-view">
+            <p class="description">
+              A futuristic, ultra-minimal side-by-side electric tandem vehicle bridging the gap between an e-bike and a lightweight micro-car. Engineered for zero-emission urban commuting with dual-pedal drive assist, aerodynamic monocoque chassis, and solar regeneration.
+            </p>
+
+            <!-- Metrics Grid -->
+            <div class="metrics-grid">
+              <div class="metric-card">
+                <span class="metric-label">Donated</span>
+                <span class="metric-value">14,250 PAC</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Progress</span>
+                <span class="metric-value">65%</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Top Donator</span>
+                <span class="metric-value">@crypto_vanguard</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Top Contributor</span>
+                <span class="metric-value">@alex_cad</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Started</span>
+                <span class="metric-value">Jan 2026</span>
+              </div>
+            </div>
+
+            <!-- Actions Section -->
+            <div class="actions-section">
+              <!-- Action 1: Donate -->
+              <div class="action-box">
+                <h4>🪙 Donate via PAC</h4>
+                <div class="wallet-bar">
+                  <span class="wallet-address" id="pacWallet1">PAC-78F9-99E2-ECORO-DEV-DONATE</span>
+                  <button class="copy-btn" onclick="copyWallet('pacWallet1', this)">Copy</button>
+                </div>
+              </div>
+
+              <!-- Action 2: Contribute -->
+              <div class="action-box">
+                <h4>🛠️ Collaborate & Earn Bounties</h4>
+                <button class="btn-contribute" onclick="openModal('E-CORO')">Submit Contribution / Idea</button>
+              </div>
+            </div>
+
+            <!-- Public Contribution Ledger -->
+            <div>
+              <span class="metric-label" style="display:block; margin-bottom: 4px;">Recent Community Contributions & Bounties</span>
+              <div class="contributions-feed">
+                <div class="contribution-item">
+                  <div class="contribution-meta">
+                    <strong>@alex_cad</strong>
+                    <span style="color:var(--brand-green);">Reward: 500 PAC</span>
+                  </div>
+                  <div>"Optimized steering knuckle CAD geometry to reduce unsprung weight by 14%."</div>
+                  <div class="admin-reply">↳ <strong>Admin:</strong> Brilliant analysis. Reward sent to verified address.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dashboard Link -->
+            <div class="dashboard-link-container">
+              <a href="https://ecoro.yourdomain.com" target="_blank" class="dashboard-link">
+                Project Dashboard & Telemetry &rarr;
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROJECT 2: PLACEHOLDER 1 -->
+      <div class="panel" data-progress="35">
+        <div class="progress-track"><div class="progress-fill" style="height: 35%;"></div></div>
+        <div class="panel-bg" style="background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80');"></div>
+        <div class="panel-content">
+          <div class="panel-header">
+            <div class="project-logo-badge">NX</div>
+            <div>
+              <h2 class="project-title">NEXUS-OS</h2>
+            </div>
+            <span class="collapsed-indicator">35% DONE</span>
+          </div>
+          <div class="details-view">
+            <p class="description">Low-latency open embedded operating system designed for micro-mobility telemetry and battery management units.</p>
+            <div class="dashboard-link-container">
+              <a href="#" class="dashboard-link">Project Dashboard &rarr;</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROJECT 3: PLACEHOLDER 2 -->
+      <div class="panel" data-progress="15">
+        <div class="progress-track"><div class="progress-fill" style="height: 15%;"></div></div>
+        <div class="panel-bg" style="background-image: url('https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=1200&q=80');"></div>
+        <div class="panel-content">
+          <div class="panel-header">
+            <div class="project-logo-badge">VR</div>
+            <div>
+              <h2 class="project-title">VOLT-ROUTING</h2>
+            </div>
+            <span class="collapsed-indicator">15% DONE</span>
+          </div>
+          <div class="details-view">
+            <p class="description">Decentralized peer-to-peer energy routing protocol for community solar micro-grids and battery packs.</p>
+            <div class="dashboard-link-container">
+              <a href="#" class="dashboard-link">Project Dashboard &rarr;</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Contribution Submission Modal -->
+  <div class="modal-overlay" id="contribModal">
+    <div class="modal">
+      <h3>Submit Contribution / Task Claim</h3>
+      <div class="form-group">
+        <label>Nickname / Handle</label>
+        <input type="text" id="contribName" placeholder="e.g. @satoshi_dev" />
+      </div>
+      <div class="form-group">
+        <label>Your PAC Wallet Address (Used for verification & bounties)</label>
+        <input type="text" id="contribWallet" placeholder="PAC-..." />
+      </div>
+      <div class="form-group">
+        <label>Proposal, Problem Solving, or Task Responsibility</label>
+        <textarea rows="4" id="contribText" placeholder="Describe your suggestion, share design files, or state which task you want to take over..."></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn-contribute" onclick="submitContribution()">Submit for Review</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Accordion interaction
+    const panels = document.querySelectorAll('.panel');
+    panels.forEach(panel => {
+      panel.addEventListener('click', (e) => {
+        if (e.target.closest('button') || e.target.closest('a') || e.target.closest('input')) return;
+        panels.forEach(p => p.classList.remove('active'));
+        panel.classList.add('active');
+      });
+    });
+
+    // Copy PAC wallet address
+    function copyWallet(elementId, btn) {
+      const text = document.getElementById(elementId).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = btn.innerText;
+        btn.innerText = "Copied!";
+        setTimeout(() => btn.innerText = originalText, 2000);
+      });
+    }
+
+    // Modal Handling
+    const modal = document.getElementById('contribModal');
+    function openModal(projectName) {
+      modal.classList.add('open');
+    }
+    function closeModal() {
+      modal.classList.remove('open');
+    }
+
+    function submitContribution() {
+      const name = document.getElementById('contribName').value;
+      const wallet = document.getElementById('contribWallet').value;
+      const text = document.getElementById('contribText').value;
+
+      if (!name || !wallet || !text) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      alert("Thank you! Your contribution has been submitted for review. Verified tasks will receive PAC rewards to " + wallet);
+      closeModal();
+    }
+  </script>
+</body>
+</html>
