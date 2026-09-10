@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Active Projects & Innovation Lab</title>
+  <title>Projects Showcase | Open Innovation</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,17 +11,16 @@
 
   <style>
     :root {
-      --bg-dark: #0a0a0d;
-      --card-bg: rgba(18, 18, 22, 0.75);
-      --card-bg-active: rgba(22, 22, 28, 0.92);
-      --border-color: #23232c;
-      --border-active: rgba(62, 207, 142, 0.45);
-      --text-main: #f4f4f6;
-      --text-muted: #9494a3;
-      --text-dim: #606070;
-      --brand: #3ecf8e;
-      --brand-glow: rgba(62, 207, 142, 0.16);
-      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --bg-dark: #0d0d10;
+      --card-bg: #141418;
+      --card-bg-hover: #1a1a20;
+      --border-color: #26262e;
+      --border-active: #3ecf8e;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --brand-green: #3ecf8e;
+      --brand-green-glow: rgba(62, 207, 142, 0.25);
+      --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
     }
 
@@ -34,51 +33,33 @@
     body {
       background-color: var(--bg-dark);
       color: var(--text-main);
-      font-family: var(--font-sans);
-      height: 100vh;
+      font-family: var(--font-family);
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
-      padding: 1.25rem;
-      overflow: hidden;
+      padding: 1.5rem 1rem;
     }
 
     .container {
-      max-width: 1240px;
+      max-width: 1320px;
       width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 0.85rem;
     }
 
-    /* Minimal Viewport-Friendly Header */
+    /* Header */
     .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-    }
-    .header-tag {
-      font-family: var(--font-mono);
-      font-size: 0.68rem;
-      color: var(--brand);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      display: block;
-      margin-bottom: 0.2rem;
+      margin-bottom: 1.25rem;
     }
     .header h1 {
-      font-size: 1.35rem;
+      font-size: 1.75rem;
       font-weight: 800;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.03em;
       color: #fff;
     }
     .header p {
       color: var(--text-muted);
-      font-size: 0.78rem;
-      max-width: 460px;
-      text-align: right;
-      line-height: 1.35;
+      margin-top: 0.25rem;
+      font-size: 0.88rem;
     }
 
     /* Accordion Container */
@@ -87,16 +68,16 @@
       flex-direction: column;
       gap: 0.75rem;
       width: 100%;
-      height: min(520px, calc(100vh - 140px));
     }
 
-    @media (min-width: 900px) {
+    @media (min-width: 1024px) {
       .accordion {
         flex-direction: row;
+        height: 640px; /* Precise height fitted for all content without scroll */
       }
     }
 
-    /* Panel Card */
+    /* Card / Panel */
     .panel {
       position: relative;
       background: var(--card-bg);
@@ -106,32 +87,30 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      transition: flex 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-                  border-color 0.3s ease,
-                  box-shadow 0.3s ease;
-      backdrop-filter: blur(10px);
+      transition: flex 0.45s cubic-bezier(0.16, 1, 0.3, 1), 
+                  background 0.3s ease, 
+                  border-color 0.3s ease;
     }
 
-    @media (min-width: 900px) {
+    @media (min-width: 1024px) {
       .panel {
-        flex: 0.85;
+        flex: 1;
       }
       .panel.active {
-        flex: 3.6;
+        flex: 4.8;
         cursor: default;
-        background: var(--card-bg-active);
-        border-color: var(--border-active);
-        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+        border-color: rgba(62, 207, 142, 0.5);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       }
     }
 
-    /* Left Edge Vertical Progress Bar */
+    /* Vertical Progress Bar on very left edge */
     .progress-track {
       position: absolute;
       left: 0;
       top: 0;
       bottom: 0;
-      width: 3px;
+      width: 4px;
       background: rgba(255, 255, 255, 0.08);
       z-index: 10;
     }
@@ -140,301 +119,354 @@
       left: 0;
       bottom: 0;
       width: 100%;
-      background: var(--brand);
-      box-shadow: 0 0 8px var(--brand);
-      transition: height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      background: var(--brand-green);
+      box-shadow: 0 0 8px var(--brand-green);
+      transition: height 0.6s ease;
     }
 
-    /* Background Artwork */
-    .panel-backdrop {
+    /* Background image layer for active card */
+    .panel-bg {
       position: absolute;
       inset: 0;
       background-size: cover;
       background-position: center;
-      opacity: 0.16;
-      transition: opacity 0.4s ease, transform 0.6s ease;
+      opacity: 0;
+      transition: opacity 0.5s ease;
       z-index: 1;
     }
-    .panel:hover .panel-backdrop {
-      opacity: 0.24;
-    }
-    .panel.active .panel-backdrop {
-      opacity: 0.32;
-      transform: scale(1.02);
+    .panel.active .panel-bg {
+      opacity: 0.09;
     }
 
-    /* Panel Inner Content */
-    .panel-inner {
+    /* Panel Content Container */
+    .panel-content {
       position: relative;
       z-index: 2;
-      padding: 1.1rem 1rem 1rem 1.25rem;
+      padding: 1.15rem 1.25rem 1.15rem 1.5rem;
       height: 100%;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      overflow: hidden; /* Prevents scrollbars */
     }
 
-    /* Collapsed State: Badge top, name underneath */
+    /* Header & Logo */
     .panel-header {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      text-align: center;
-      gap: 0.5rem;
-      transition: all 0.3s ease;
+      gap: 0.65rem;
     }
 
-    /* Expanded State: Horizontal row */
-    .panel.active .panel-header {
-      flex-direction: row;
-      text-align: left;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .project-badge {
-      width: 38px;
-      height: 38px;
+    .project-logo-badge {
+      width: 36px;
+      height: 36px;
       border-radius: 8px;
-      background: #17171e;
-      border: 1px solid var(--border-color);
+      background: #1f1f26;
+      border: 1px solid #2e2e38;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 700;
-      font-size: 0.82rem;
-      font-family: var(--font-mono);
-      color: var(--brand);
+      font-size: 0.85rem;
+      color: var(--brand-green);
       flex-shrink: 0;
     }
 
     .project-title {
-      font-size: 0.86rem;
-      font-weight: 600;
-      color: #fff;
-      white-space: nowrap;
-      letter-spacing: -0.01em;
-    }
-    .panel.active .project-title {
       font-size: 1.15rem;
       font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
     }
 
-    .progress-tag {
-      display: none;
+    .collapsed-indicator {
+      font-size: 0.7rem;
+      color: var(--brand-green);
+      background: rgba(62, 207, 142, 0.1);
+      padding: 2px 7px;
+      border-radius: 10px;
       margin-left: auto;
       font-family: var(--font-mono);
-      font-size: 0.68rem;
-      color: var(--brand);
-      background: var(--brand-glow);
-      padding: 2px 7px;
-      border-radius: 4px;
-      font-weight: 600;
-    }
-    .panel.active .progress-tag {
-      display: inline-block;
+      white-space: nowrap;
     }
 
-    /* Expanded Content */
-    .expanded-body {
+    /* Expanded Details View */
+    .details-view {
       display: none;
       flex-direction: column;
       gap: 0.75rem;
-      margin-top: auto;
+      margin-top: 0.75rem;
+      flex: 1;
+      justify-content: space-between;
     }
-    .panel.active .expanded-body {
+
+    .panel.active .details-view {
       display: flex;
     }
 
-    .project-description {
-      font-size: 0.78rem;
+    .description {
+      font-size: 0.84rem;
       line-height: 1.45;
-      color: #b0b0be;
-      background: rgba(9, 9, 12, 0.48);
-      padding: 0.55rem 0.75rem;
-      border-radius: 6px;
-      border: 1px solid rgba(255, 255, 255, 0.04);
-      max-width: 90%;
+      color: #d1d5db;
     }
 
-    /* Telemetry Box */
-    .telemetry-strip {
+    /* Metrics Grid */
+    .metrics-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
-      background: rgba(10, 10, 14, 0.65);
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      padding: 0.5rem 0.75rem;
+      grid-template-columns: repeat(5, 1fr);
       gap: 0.5rem;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 0.6rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
     }
-    .telemetry-item {
+    @media (max-width: 768px) {
+      .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .metric-card {
       display: flex;
       flex-direction: column;
-      gap: 0.1rem;
+      gap: 0.15rem;
     }
-    .telemetry-label {
-      font-size: 0.6rem;
-      font-family: var(--font-mono);
+    .metric-label {
+      font-size: 0.65rem;
       text-transform: uppercase;
-      color: var(--text-dim);
-      letter-spacing: 0.04em;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
     }
-    .telemetry-value {
-      font-size: 0.78rem;
+    .metric-value {
+      font-size: 0.82rem;
       font-weight: 600;
+      color: #fff;
       font-family: var(--font-mono);
-      color: var(--text-main);
-    }
-    .telemetry-value.highlight {
-      color: var(--brand);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    /* Action Row */
-    .action-row {
+    /* Actions Section */
+    .actions-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .action-box {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.65rem 0.75rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 0.4rem;
+    }
+    .action-box h4 {
+      font-size: 0.78rem;
+      color: #fff;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-      padding-top: 0.55rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      gap: 0.35rem;
     }
 
+    /* Buttons */
     .btn-donate {
-      background: var(--brand);
-      color: #08080a;
-      font-weight: 600;
+      background: #f59e0b;
+      color: #000;
+      font-weight: 700;
       font-size: 0.75rem;
-      padding: 0.42rem 0.85rem;
-      border-radius: 5px;
       border: none;
+      padding: 0.45rem 0.65rem;
+      border-radius: 6px;
       cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      transition: opacity 0.2s, transform 0.1s;
+      text-align: center;
+      transition: opacity 0.2s;
     }
     .btn-donate:hover {
-      opacity: 0.92;
-      transform: translateY(-1px);
+      opacity: 0.9;
     }
 
-    .dashboard-anchor {
+    .btn-contribute {
+      background: var(--brand-green);
+      color: #000;
+      font-weight: 700;
       font-size: 0.75rem;
+      border: none;
+      padding: 0.45rem 0.65rem;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+      transition: opacity 0.2s;
+    }
+    .btn-contribute:hover {
+      opacity: 0.9;
+    }
+
+    /* Feed of Contributions */
+    .contributions-feed {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      max-height: 85px;
+      overflow-y: auto;
+      padding-right: 3px;
+    }
+    .contribution-item {
+      background: #111115;
+      border-left: 2px solid var(--brand-green);
+      padding: 0.35rem 0.55rem;
+      border-radius: 0 4px 4px 0;
+      font-size: 0.72rem;
+    }
+    .contribution-meta {
+      display: flex;
+      justify-content: space-between;
       color: var(--text-muted);
+      font-size: 0.68rem;
+      margin-bottom: 2px;
+    }
+    .admin-reply {
+      margin-top: 2px;
+      padding-top: 2px;
+      border-top: 1px dashed #2a2a34;
+      color: #3ecf8e;
+      font-size: 0.68rem;
+    }
+
+    /* Bottom Link */
+    .dashboard-link-container {
+      padding-top: 0.4rem;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .wallet-preview {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+    .dashboard-link {
+      color: var(--brand-green);
       text-decoration: none;
+      font-size: 0.78rem;
+      font-weight: 600;
       display: inline-flex;
       align-items: center;
-      gap: 0.3rem;
-      transition: color 0.2s;
+      gap: 0.25rem;
+      transition: transform 0.2s;
     }
-    .dashboard-anchor:hover {
-      color: var(--brand);
+    .dashboard-link:hover {
+      transform: translateX(3px);
     }
 
-    /* Modal Form */
+    /* Modal Styling */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(6px);
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(4px);
       display: none;
       align-items: center;
       justify-content: center;
-      z-index: 1000;
+      z-index: 100;
       padding: 1rem;
     }
     .modal-overlay.open {
       display: flex;
     }
-    .modal-card {
-      background: #141418;
-      border: 1px solid #282833;
-      border-radius: 10px;
+    .modal {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
       width: 100%;
-      max-width: 410px;
-      padding: 1.3rem;
+      max-width: 440px;
       display: flex;
       flex-direction: column;
       gap: 0.85rem;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.7);
     }
-    .modal-card h3 {
+    .modal h3 {
       font-size: 1.05rem;
       color: #fff;
     }
-    .modal-card p {
-      font-size: 0.74rem;
-      color: var(--text-muted);
-      line-height: 1.4;
-    }
-
-    .wallet-box {
-      background: #0b0b0e;
-      border: 1px solid var(--border-color);
+    .modal-target-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      background: rgba(62, 207, 142, 0.15);
+      color: var(--brand-green);
+      padding: 3px 8px;
       border-radius: 5px;
-      padding: 0.45rem 0.65rem;
+      width: fit-content;
+    }
+    .wallet-box-modal {
+      background: #0d0d10;
+      border: 1px solid #2a2a34;
+      border-radius: 6px;
+      padding: 0.4rem 0.6rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 0.5rem;
     }
-    .wallet-address-text {
+    .wallet-box-modal span {
       font-family: var(--font-mono);
-      font-size: 0.7rem;
-      color: var(--brand);
+      font-size: 0.72rem;
+      color: #3ecf8e;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    .copy-button {
-      background: #1f1f28;
-      border: 1px solid #2d2d3b;
+    .copy-btn {
+      background: #252530;
+      border: none;
       color: #fff;
       font-size: 0.68rem;
-      padding: 3px 7px;
+      padding: 3px 6px;
       border-radius: 4px;
       cursor: pointer;
     }
-    .copy-button:hover {
-      background: #2b2b38;
+    .copy-btn:hover {
+      background: #353545;
     }
-
-    .form-field {
+    .form-group {
       display: flex;
       flex-direction: column;
       gap: 0.25rem;
     }
-    .form-field label {
-      font-size: 0.65rem;
+    .form-group label {
+      font-size: 0.72rem;
       color: var(--text-muted);
-      font-family: var(--font-mono);
     }
-    .form-field input {
-      background: #0b0b0e;
+    .form-group input, .form-group textarea {
+      background: #0d0d10;
       border: 1px solid var(--border-color);
       color: #fff;
-      font-size: 0.8rem;
       padding: 0.45rem 0.6rem;
-      border-radius: 5px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-family: inherit;
+    }
+    .form-group input:focus, .form-group textarea:focus {
       outline: none;
+      border-color: var(--brand-green);
     }
-    .form-field input:focus {
-      border-color: var(--brand);
-    }
-
-    .modal-buttons {
+    .modal-actions {
       display: flex;
       justify-content: flex-end;
       gap: 0.5rem;
-      margin-top: 0.25rem;
+      margin-top: 0.35rem;
     }
-    .btn-cancel {
+    .btn-secondary {
       background: transparent;
       border: 1px solid var(--border-color);
-      color: var(--text-muted);
+      color: #fff;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
       font-size: 0.75rem;
-      padding: 0.4rem 0.75rem;
-      border-radius: 5px;
       cursor: pointer;
     }
   </style>
@@ -443,344 +475,207 @@
 
   <div class="container">
     <div class="header">
-      <div>
-        <span class="header-tag">// R&D Open Registry</span>
-        <h1>Active Projects & Initiatives</h1>
-      </div>
-      <p>Select any rectangle below to view progress, monitor top donators, or pledge PAC support.</p>
+      <h1>Active Projects & Innovation Lab</h1>
+      <p>Explore initiatives, contribute insights, or donate PAC. Top supporters and contributors are recorded on the registry.</p>
     </div>
 
-    <!-- 4 RECTANGLES ACCORDION -->
     <div class="accordion" id="projectAccordion">
       
-      <!-- 1: E-CORO -->
-      <div class="panel active" data-id="ecoro" data-progress="68" data-wallet="PAC-78F9-99E2-ECORO-DEV" data-project="E-CORO">
-        <div class="progress-track"><div class="progress-fill" style="height: 68%;"></div></div>
-        <div class="panel-backdrop" style="background-image: url('https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=1200&q=80');"></div>
+      <!-- PROJECT 1: E-CORO -->
+      <div class="panel active" data-id="ecoro" data-progress="65">
+        <div class="progress-track"><div class="progress-fill" style="height: 65%;"></div></div>
+        <div class="panel-bg" style="background-image: url('https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=1200&q=80');"></div>
 
-        <div class="panel-inner">
+        <div class="panel-content">
           <div class="panel-header">
-            <div class="project-badge">EC</div>
-            <div class="project-title">E-CORO</div>
-            <span class="progress-tag">68% COMPLETE</span>
+            <div class="project-logo-badge">EC</div>
+            <div>
+              <h2 class="project-title">E-CORO</h2>
+            </div>
+            <span class="collapsed-indicator">65% DONE</span>
           </div>
 
-          <div class="expanded-body">
-            <p class="project-description">
-              Side-by-side electric tandem commuter vehicle featuring composite monocoque chassis and dual solar regen.
+          <div class="details-view">
+            <p class="description">
+              Futuristic, ultra-minimal side-by-side electric tandem micro-car for zero-emission urban commuting with dual-pedal drive assist and solar regeneration.
             </p>
 
-            <div class="telemetry-strip">
-              <div class="telemetry-item">
-                <span class="telemetry-label">Donated</span>
-                <span class="telemetry-value highlight" id="stat-ecoro">14,250 PAC</span>
+            <div class="metrics-grid">
+              <div class="metric-card">
+                <span class="metric-label">Donated</span>
+                <span class="metric-value" id="ecoro-donated">14,250 PAC</span>
               </div>
-              <div class="telemetry-item">
-                <span class="telemetry-label">Top Donator</span>
-                <span class="telemetry-value" id="top-ecoro">@crypto_vanguard</span>
+              <div class="metric-card">
+                <span class="metric-label">Progress</span>
+                <span class="metric-value">65%</span>
               </div>
-              <div class="telemetry-item">
-                <span class="telemetry-label">Phase</span>
-                <span class="telemetry-value">Chassis Build</span>
+              <div class="metric-card">
+                <span class="metric-label">Top Donator</span>
+                <span class="metric-value" id="ecoro-top-donator">@crypto_vanguard</span>
               </div>
-              <div class="telemetry-item">
-                <span class="telemetry-label">Initiated</span>
-                <span class="telemetry-value">Jan 2026</span>
+              <div class="metric-card">
+                <span class="metric-label">Top Contributor</span>
+                <span class="metric-value">@alex_cad</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Started</span>
+                <span class="metric-value">Jan 2026</span>
               </div>
             </div>
 
-            <div class="action-row">
-              <button class="btn-donate" onclick="openDonateModal('ecoro', 'E-CORO', 'PAC-78F9-99E2-ECORO-DEV')">
-                <span>🪙</span> Donate PAC
-              </button>
-              <a href="https://ecoro.yourdomain.com" target="_blank" class="dashboard-anchor">
-                Open Dashboard &rarr;
-              </a>
+            <div class="actions-section">
+              <div class="action-box">
+                <h4>🪙 Support with PAC</h4>
+                <button class="btn-donate" onclick="openDonateModal('E-CORO', 'ecoro', 'PAC-78F9-99E2-ECORO-DEV')">Donate & Register Name</button>
+              </div>
+
+              <div class="action-box">
+                <h4>🛠️ Collaborate & Bounty</h4>
+                <button class="btn-contribute" onclick="openContribModal('E-CORO')">Submit Contribution</button>
+              </div>
+            </div>
+
+            <div>
+              <span class="metric-label" style="display:block; margin-bottom: 3px;">Recent Community Bounties</span>
+              <div class="contributions-feed">
+                <div class="contribution-item">
+                  <div class="contribution-meta">
+                    <strong>@alex_cad</strong>
+                    <span style="color:var(--brand-green);">Reward: 500 PAC</span>
+                  </div>
+                  <div>"Optimized steering knuckle CAD geometry reducing unsprung weight by 14%."</div>
+                  <div class="admin-reply">↳ <strong>Admin:</strong> Approved. Reward dispatched.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="dashboard-link-container">
+              <span class="wallet-preview">Target: PAC-78F9...ECORO</span>
+              <a href="https://ecoro.yourdomain.com" target="_blank" class="dashboard-link">Telemetry Dashboard &rarr;</a>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- 2: NEXUS-OS -->
-      <div class="panel" data-id="nexus" data-progress="45" data-wallet="PAC-99B2-22C4-NEXUS-FIRM" data-project="NEXUS-OS">
+      <!-- PROJECT 2: NEXUS-OS -->
+      <div class="panel" data-id="nexus" data-progress="45">
         <div class="progress-track"><div class="progress-fill" style="height: 45%;"></div></div>
-        <div class="panel-backdrop" style="background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80');"></div>
+        <div class="panel-bg" style="background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80');"></div>
 
-        <div class="panel-inner">
+        <div class="panel-content">
           <div class="panel-header">
-            <div class="project-badge">NX</div>
-            <div class="project-title">NEXUS-OS</div>
-            <span class="progress-tag">45% COMPLETE</span>
+            <div class="project-logo-badge">NX</div>
+            <div>
+              <h2 class="project-title">NEXUS-OS</h2>
+            </div>
+            <span class="collapsed-indicator">45% DONE</span>
           </div>
 
-          <div class="expanded-body">
-            <p class="project-description">
-              Embedded firmware for micro-mobility CAN-bus telemetry, real-time motor cadence sync, and multicell BMS.
+          <div class="details-view">
+            <p class="description">
+              Real-time open telemetry & BMS operating system firmware designed for low-power ARM micro-controllers and IoT clusters.
             </p>
 
-            <div class="telemetry-strip">
-              <div class="telemetry-item">
-                <span class="telemetry-label">Donated</span>
-                <span class="telemetry-value highlight" id="stat-nexus">8,400 PAC</span>
+            <div class="metrics-grid">
+              <div class="metric-card">
+                <span class="metric-label">Donated</span>
+                <span class="metric-value" id="nexus-donated">8,600 PAC</span>
               </div>
-              <div class="telemetry-item">
-                <span class="telemetry-label">Top Donator</span>
-                <span class="telemetry-value" id="top-nexus">@firmware_guy</span>
+              <div class="metric-card">
+                <span class="metric-label">Progress</span>
+                <span class="metric-value">45%</span>
               </div>
-              <div class="telemetry-item">
-                <span class="telemetry-label">Phase</span>
-                <span class="telemetry-value">PCB Rev 2.1</span>
+              <div class="metric-card">
+                <span class="metric-label">Top Donator</span>
+                <span class="metric-value" id="nexus-top-donator">@firmware_whale</span>
               </div>
-              <div class="telemetry-item">
-                <span class="telemetry-label">Initiated</span>
-                <span class="telemetry-value">Nov 2025</span>
+              <div class="metric-card">
+                <span class="metric-label">Top Contributor</span>
+                <span class="metric-value">@rust_dev99</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Started</span>
+                <span class="metric-value">Feb 2026</span>
               </div>
             </div>
 
-            <div class="action-row">
-              <button class="btn-donate" onclick="openDonateModal('nexus', 'NEXUS-OS', 'PAC-99B2-22C4-NEXUS-FIRM')">
-                <span>🪙</span> Donate PAC
-              </button>
-              <a href="#" class="dashboard-anchor">
-                Open Dashboard &rarr;
-              </a>
+            <div class="actions-section">
+              <div class="action-box">
+                <h4>🪙 Support with PAC</h4>
+                <button class="btn-donate" onclick="openDonateModal('NEXUS-OS', 'nexus', 'PAC-44A1-22C8-NEXUS-OS')">Donate & Register Name</button>
+              </div>
+
+              <div class="action-box">
+                <h4>🛠️ Collaborate & Bounty</h4>
+                <button class="btn-contribute" onclick="openContribModal('NEXUS-OS')">Submit Contribution</button>
+              </div>
+            </div>
+
+            <div>
+              <span class="metric-label" style="display:block; margin-bottom: 3px;">Recent Community Bounties</span>
+              <div class="contributions-feed">
+                <div class="contribution-item">
+                  <div class="contribution-meta">
+                    <strong>@rust_dev99</strong>
+                    <span style="color:var(--brand-green);">Reward: 350 PAC</span>
+                  </div>
+                  <div>"Wrote async CAN-bus parser with 0% dropped frame rate."</div>
+                  <div class="admin-reply">↳ <strong>Admin:</strong> Merged into main branch.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="dashboard-link-container">
+              <span class="wallet-preview">Target: PAC-44A1...NEXUS</span>
+              <a href="#" class="dashboard-link">OS Repository & Docs &rarr;</a>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- 3: VOLT-ROUTING -->
-      <div class="panel" data-id="volt" data-progress="25" data-wallet="PAC-12K8-66Z1-KINETIC-DRIVE" data-project="VOLT-ROUTING">
-        <div class="progress-track"><div class="progress-fill" style="height: 25%;"></div></div>
-        <div class="panel-backdrop" style="background-image: url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1200&q=80');"></div>
+      <!-- PROJECT 3: VOLT-ROUTING -->
+      <div class="panel" data-id="volt" data-progress="28">
+        <div class="progress-track"><div class="progress-fill" style="height: 28%;"></div></div>
+        <div class="panel-bg" style="background-image: url('https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=1200&q=80');"></div>
 
-        <div class="panel-inner">
+        <div class="panel-content">
           <div class="panel-header">
-            <div class="project-badge">VR</div>
-            <div class="project-title">VOLT-ROUTING</div>
-            <span class="progress-tag">25% COMPLETE</span>
+            <div class="project-logo-badge">VR</div>
+            <div>
+              <h2 class="project-title">VOLT-ROUTING</h2>
+            </div>
+            <span class="collapsed-indicator">28% DONE</span>
           </div>
 
-          <div class="expanded-body">
-            <p class="project-description">
-              Decentralized energy distribution matrix and regenerative torque-split controller for hybrid battery packs.
+          <div class="details-view">
+            <p class="description">
+              Peer-to-peer decentralized energy routing protocol for distributed neighborhood battery packs and localized solar microgrids.
             </p>
 
-            <div class="telemetry-strip">
-              <div class="telemetry-item">
-                <span class="telemetry-label">Donated</span>
-                <span class="telemetry-value highlight" id="stat-volt">3,120 PAC</span>
+            <div class="metrics-grid">
+              <div class="metric-card">
+                <span class="metric-label">Donated</span>
+                <span class="metric-value" id="volt-donated">4,120 PAC</span>
               </div>
-              <div class="telemetry-item">
-                <span class="telemetry-label">Top Donator</span>
-                <span class="telemetry-value" id="top-volt">@pedal_dev</span>
+              <div class="metric-card">
+                <span class="metric-label">Progress</span>
+                <span class="metric-value">28%</span>
               </div>
-              <div class="telemetry-item">
-                <span class="telemetry-label">Phase</span>
-                <span class="telemetry-value">Bench Tests</span>
+              <div class="metric-card">
+                <span class="metric-label">Top Donator</span>
+                <span class="metric-value" id="volt-top-donator">@green_grid</span>
               </div>
-              <div class="telemetry-item">
-                <span class="telemetry-label">Initiated</span>
-                <span class="telemetry-value">Mar 2026</span>
+              <div class="metric-card">
+                <span class="metric-label">Top Contributor</span>
+                <span class="metric-value">@smart_meter</span>
               </div>
-            </div>
-
-            <div class="action-row">
-              <button class="btn-donate" onclick="openDonateModal('volt', 'VOLT-ROUTING', 'PAC-12K8-66Z1-KINETIC-DRIVE')">
-                <span>🪙</span> Donate PAC
-              </button>
-              <a href="#" class="dashboard-anchor">
-                Open Dashboard &rarr;
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 4: AERO-CORE -->
-      <div class="panel" data-id="aero" data-progress="50" data-wallet="PAC-44A1-88D3-AERO-FRAME" data-project="AERO-CORE">
-        <div class="progress-track"><div class="progress-fill" style="height: 50%;"></div></div>
-        <div class="panel-backdrop" style="background-image: url('https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=1200&q=80');"></div>
-
-        <div class="panel-inner">
-          <div class="panel-header">
-            <div class="project-badge">AC</div>
-            <div class="project-title">AERO-CORE</div>
-            <span class="progress-tag">50% COMPLETE</span>
-          </div>
-
-          <div class="expanded-body">
-            <p class="project-description">
-              CFD-tested aerodynamic canopy shell engineered for laminar boundary flow and minimal lateral crosswind drag.
-            </p>
-
-            <div class="telemetry-strip">
-              <div class="telemetry-item">
-                <span class="telemetry-label">Donated</span>
-                <span class="telemetry-value highlight" id="stat-aero">9,800 PAC</span>
-              </div>
-              <div class="telemetry-item">
-                <span class="telemetry-label">Top Donator</span>
-                <span class="telemetry-value" id="top-aero">@aerolabs</span>
-              </div>
-              <div class="telemetry-item">
-                <span class="telemetry-label">Phase</span>
-                <span class="telemetry-value">Wind Tunnel</span>
-              </div>
-              <div class="telemetry-item">
-                <span class="telemetry-label">Initiated</span>
-                <span class="telemetry-value">Feb 2026</span>
+              <div class="metric-card">
+                <span class="metric-label">Started</span>
+                <span class="metric-value">Mar 2026</span>
               </div>
             </div>
 
-            <div class="action-row">
-              <button class="btn-donate" onclick="openDonateModal('aero', 'AERO-CORE', 'PAC-44A1-88D3-AERO-FRAME')">
-                <span>🪙</span> Donate PAC
-              </button>
-              <a href="#" class="dashboard-anchor">
-                Open Dashboard &rarr;
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- DONATION REGISTRATION MODAL -->
-  <div class="modal-overlay" id="donateModal">
-    <div class="modal-card">
-      <div>
-        <h3 id="modalProjectName">Support Project</h3>
-        <p>Send PAC to the wallet address below, then enter your handle to be credited as a supporter.</p>
-      </div>
-
-      <div class="wallet-box">
-        <span class="wallet-address-text" id="modalWalletAddr">PAC-...</span>
-        <button class="copy-button" onclick="copyModalWallet(this)">Copy</button>
-      </div>
-
-      <div class="form-field">
-        <label>YOUR NICKNAME / HANDLE *</label>
-        <input type="text" id="donorNickname" placeholder="e.g. @satoshi" required />
-      </div>
-
-      <div class="form-field">
-        <label>DONATED AMOUNT (PAC) *</label>
-        <input type="number" id="donorAmount" placeholder="e.g. 500" min="1" required />
-      </div>
-
-      <div class="form-field">
-        <label>TX HASH / SENDER WALLET (OPTIONAL)</label>
-        <input type="text" id="donorTx" placeholder="Optional transaction identifier" />
-      </div>
-
-      <div class="modal-buttons">
-        <button class="btn-cancel" onclick="closeDonateModal()">Cancel</button>
-        <button class="btn-donate" onclick="recordDonation()">Submit Pledge</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // Accordion Toggle Behavior
-    const panels = document.querySelectorAll('.panel');
-    panels.forEach(panel => {
-      panel.addEventListener('click', (e) => {
-        if (e.target.closest('button') || e.target.closest('a') || e.target.closest('input')) return;
-        panels.forEach(p => p.classList.remove('active'));
-        panel.classList.add('active');
-      });
-    });
-
-    // Donation Modal & Donor State Management
-    const modal = document.getElementById('donateModal');
-    const modalTitle = document.getElementById('modalProjectName');
-    const modalWallet = document.getElementById('modalWalletAddr');
-    
-    let activeProjectId = '';
-    let currentWallet = '';
-
-    function openDonateModal(projectId, projectName, walletAddress) {
-      activeProjectId = projectId;
-      currentWallet = walletAddress;
-      modalTitle.innerText = `Support ${projectName}`;
-      modalWallet.innerText = walletAddress;
-      modal.classList.add('open');
-    }
-
-    function closeDonateModal() {
-      modal.classList.remove('open');
-      document.getElementById('donorNickname').value = '';
-      document.getElementById('donorAmount').value = '';
-      document.getElementById('donorTx').value = '';
-    }
-
-    function copyModalWallet(btn) {
-      navigator.clipboard.writeText(currentWallet).then(() => {
-        const oldText = btn.innerText;
-        btn.innerText = 'Copied!';
-        setTimeout(() => btn.innerText = oldText, 2000);
-      });
-    }
-
-    // Records donation, saves to localStorage, updates stats & top donator
-    function recordDonation() {
-      const handleInput = document.getElementById('donorNickname').value.trim();
-      const amountInput = parseFloat(document.getElementById('donorAmount').value.trim());
-      const txInput = document.getElementById('donorTx').value.trim();
-
-      if (!handleInput || isNaN(amountInput) || amountInput <= 0) {
-        alert("Please enter a valid nickname and donation amount.");
-        return;
-      }
-
-      const nickname = handleInput.startsWith('@') ? handleInput : `@${handleInput}`;
-      
-      // 1. Retrieve & update local database log
-      const storageKey = `donations_${activeProjectId}`;
-      const existingLogs = JSON.parse(localStorage.getItem(storageKey) || '[]');
-      
-      const newRecord = {
-        nickname: nickname,
-        amount: amountInput,
-        tx: txInput || 'N/A',
-        timestamp: new Date().toISOString()
-      };
-      existingLogs.push(newRecord);
-      localStorage.setItem(storageKey, JSON.stringify(existingLogs));
-
-      // 2. Update Total Donated UI
-      const totalEl = document.getElementById(`stat-${activeProjectId}`);
-      if (totalEl) {
-        const currentTotal = parseInt(totalEl.innerText.replace(/[^0-9]/g, '')) || 0;
-        totalEl.innerText = `${(currentTotal + amountInput).toLocaleString()} PAC`;
-      }
-
-      // 3. Recalculate and update Top Donator
-      const donorTotals = {};
-      existingLogs.forEach(entry => {
-        donorTotals[entry.nickname] = (donorTotals[entry.nickname] || 0) + entry.amount;
-      });
-
-      let topSupporter = nickname;
-      let maxVal = 0;
-      for (const [user, val] of Object.entries(donorTotals)) {
-        if (val > maxVal) {
-          maxVal = val;
-          topSupporter = user;
-        }
-      }
-
-      const topEl = document.getElementById(`top-${activeProjectId}`);
-      if (topEl) {
-        topEl.innerText = topSupporter;
-      }
-
-      alert(`Thank you ${nickname}! Your contribution of ${amountInput.toLocaleString()} PAC has been recorded.`);
-      closeDonateModal();
-    }
-  </script>
-</body>
-</html>
+            <div class="actions-section">
+              <div class="action-box">
+                <h4>🪙 Support with PAC</h4>
+                <button class="btn-donate" onclick="openDonateModal('VOLT-
