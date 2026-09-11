@@ -1,137 +1,474 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard - Projects</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-</head>
-<body class="bg-gray-900 text-gray-200 font-sans p-6 min-h-screen" x-data="adminApp()">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>R&D Project CMS // Admin Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg: #09090c;
+      --card-bg: #121217;
+      --border: #23232c;
+      --accent: #3ecf8e;
+      --accent-glow: rgba(62, 207, 142, 0.15);
+      --text: #f4f4f6;
+      --muted: #8c8c9e;
+      --danger: #ef4444;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-sans: 'Inter', sans-serif;
+    }
 
-  <!-- PIN Protection -->
-  <div x-show="!isAuthenticated" class="max-w-sm mx-auto mt-20 bg-gray-800 p-8 rounded-lg shadow-lg border border-gray-700">
-    <h2 class="text-2xl font-bold mb-4 text-white">Admin Login</h2>
-    <input type="password" x-model="pin" placeholder="Enter PIN (1234)" class="w-full p-3 rounded bg-gray-900 border border-gray-600 focus:border-green-500 text-white mb-4">
-    <button @click="checkPin()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded transition">Login</button>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Auth Overlay */
+    #authOverlay {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .auth-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 2rem;
+      border-radius: 10px;
+      text-align: center;
+      max-width: 320px;
+      width: 90%;
+    }
+
+    /* Admin Container */
+    .admin-container {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    header h1 { font-size: 1.25rem; font-weight: 700; color: #fff; }
+    .status-tag {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      background: var(--accent-glow);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+
+    /* Grid Layout */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 1.5rem;
+    }
+
+    /* Project Sidebar Select */
+    .project-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .nav-item {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .nav-item.active {
+      border-color: var(--accent);
+      color: #fff;
+      background: rgba(62, 207, 142, 0.05);
+    }
+    .nav-badge {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      background: #1c1c24;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--accent);
+    }
+
+    /* Main Form */
+    .cms-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    input, textarea, select {
+      background: #0d0d11;
+      border: 1px solid var(--border);
+      padding: 0.6rem 0.8rem;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 0.85rem;
+      font-family: var(--font-sans);
+      outline: none;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--accent);
+    }
+
+    /* Repeatable Items (Roadmap & Timeline) */
+    .list-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .dynamic-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .dynamic-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      gap: 0.5rem;
+      align-items: center;
+      background: #0e0e13;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+
+    /* Buttons */
+    .btn {
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: opacity 0.2s;
+    }
+    .btn-primary { background: var(--accent); color: #08080a; }
+    .btn-secondary { background: #1c1c24; border: 1px solid var(--border); color: #fff; }
+    .btn-danger { background: transparent; color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); padding: 0.35rem 0.6rem; }
+    .btn:hover { opacity: 0.9; }
+
+    .action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- AUTH / PIN PROTECTION -->
+  <div id="authOverlay">
+    <div class="auth-box">
+      <h3 style="margin-bottom: 0.5rem; color:#fff;">Admin Access</h3>
+      <p style="font-size: 0.78rem; color: var(--muted); margin-bottom: 1rem;">Enter PIN (Default: <code>1234</code>)</p>
+      <input type="password" id="pinInput" placeholder="PIN" style="width: 100%; text-align: center; margin-bottom: 1rem;" />
+      <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="verifyPin()">Unlock Dashboard</button>
+    </div>
   </div>
 
-  <!-- Dashboard -->
-  <div x-show="isAuthenticated" x-cloak class="max-w-5xl mx-auto">
-    <div class="flex justify-between items-center mb-8">
-      <h1 class="text-3xl font-bold text-white">Project Data Manager</h1>
+  <div class="admin-container">
+    <header>
       <div>
-        <button @click="saveData()" class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded font-bold shadow transition">💾 Save to Website</button>
-        <button @click="resetData()" class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded font-bold shadow transition ml-2">⚠️ Reset to Defaults</button>
+        <h1>Innovation Lab // Content Manager</h1>
+        <span style="font-size: 0.75rem; color: var(--muted);">Live parameter and telemetry editor for active projects</span>
       </div>
-    </div>
+      <span class="status-tag">Connected Local Data</span>
+    </header>
 
-    <!-- Project Selector -->
-    <div class="flex space-x-4 mb-6">
-      <template x-for="(project, key) in data" :key="key">
-        <button @click="activeProject = key" 
-                :class="activeProject === key ? 'bg-blue-600 border-blue-400' : 'bg-gray-800 border-gray-700'"
-                class="px-6 py-3 rounded-lg border text-lg font-bold transition" x-text="project.name"></button>
-      </template>
-    </div>
-
-    <!-- Editor -->
-    <div x-show="activeProject" class="bg-gray-800 p-6 rounded-lg border border-gray-700 shadow-xl">
-      <h2 class="text-xl font-bold text-blue-400 mb-4" x-text="'Editing: ' + data[activeProject]?.name"></h2>
-
-      <!-- General Info -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div>
-          <label class="block text-sm text-gray-400 mb-1">Tagline</label>
-          <input x-model="data[activeProject].tagline" class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-sm">
+    <div class="dashboard-grid">
+      <!-- SIDEBAR -->
+      <div class="project-nav" id="projectNav">
+        <div class="nav-item active" onclick="switchProject('ecoro', this)">
+          <span class="nav-badge">EC</span> E-CORO
         </div>
-        <div>
-          <label class="block text-sm text-gray-400 mb-1">Cover Image URL</label>
-          <input x-model="data[activeProject].cover" class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-sm">
+        <div class="nav-item" onclick="switchProject('aimee', this)">
+          <span class="nav-badge">AI</span> AIMEE
+        </div>
+        <div class="nav-item" onclick="switchProject('march', this)">
+          <span class="nav-badge">MA</span> MARCH
         </div>
       </div>
 
-      <!-- Stats -->
-      <h3 class="font-bold border-b border-gray-700 pb-2 mb-4 mt-6">Stats (Progress, Donators, etc.)</h3>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <template x-for="(stat, index) in data[activeProject]?.stats" :key="index">
-          <div class="bg-gray-900 p-3 rounded border border-gray-700">
-            <input x-model="stat.label" class="w-full bg-transparent text-gray-400 text-xs mb-1 outline-none" placeholder="Label">
-            <input x-model="stat.value" class="w-full bg-transparent text-white font-bold outline-none" placeholder="Value">
+      <!-- EDITING PANEL -->
+      <div class="cms-card">
+        <h3 id="currentProjectTitle" style="color:#fff;">Editing: E-CORO</h3>
+
+        <!-- Core Project Info -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Project Name</label>
+            <input type="text" id="projName" />
           </div>
-        </template>
+          <div class="form-group">
+            <label>Badge Letters</label>
+            <input type="text" id="projBadge" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Tagline / Description</label>
+          <textarea id="projTagline" rows="2"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Cover Image URL</label>
+          <input type="text" id="projCover" />
+        </div>
+
+        <!-- ROADMAP SECTION -->
+        <div>
+          <div class="list-section-header">
+            <label>Roadmap Milestones</label>
+            <button class="btn btn-secondary" style="font-size: 0.7rem; padding: 0.25rem 0.5rem;" onclick="addRoadmapStep()">+ Add Step</button>
+          </div>
+          <div class="dynamic-list" id="roadmapList"></div>
+        </div>
+
+        <!-- TIMELINE SECTION -->
+        <div>
+          <div class="list-section-header">
+            <label>Timeline Logs & Updates</label>
+            <button class="btn btn-secondary" style="font-size: 0.7rem; padding: 0.25rem 0.5rem;" onclick="addTimelineEntry()">+ Add Event</button>
+          </div>
+          <div class="dynamic-list" id="timelineList"></div>
+        </div>
+
+        <!-- SAVE & EXPORT -->
+        <div class="action-bar">
+          <button class="btn btn-secondary" onclick="exportJSON()">Export JSON Config</button>
+          <button class="btn btn-primary" onclick="saveCurrentProject()">Save Changes</button>
+        </div>
       </div>
-
-      <!-- Timeline Data as JSON to allow quick complex edits -->
-      <h3 class="font-bold border-b border-gray-700 pb-2 mb-4 mt-6">Timeline Data (Advanced Edit)</h3>
-      <p class="text-xs text-gray-400 mb-2">Modify the timeline directly. Types available: bought, designed, assembled, tested, donation, contribution.</p>
-      <textarea x-model="timelineString" @blur="updateTimeline" class="w-full h-48 bg-gray-900 border border-gray-700 rounded p-3 font-mono text-sm text-green-400"></textarea>
-
     </div>
   </div>
 
   <script>
-    // Copy the original data from index (9).html as the fallback
-    const defaultData = {
+    // Default Data Schema matching index (8).html
+    const DEFAULT_DATA = {
       ecoro: {
-        name: 'E-CORO', badge: 'EC', tagline: 'A futuristic, ultra-minimal side-by-side electric tandem vehicle...',
-        cover: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=2070&auto=format&fit=crop',
-        stats: [
-          { label: 'Progress', value: '65%' }, { label: 'Donated', value: '14,250 PAC' },
-          { label: 'Started', value: 'Jan 2026' }, { label: 'Contributors', value: '12' }
+        name: "E-CORO",
+        badge: "EC",
+        tagline: "Ultra-compact pedal-electric tandem commuter vehicle with composite monocoque chassis.",
+        cover: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=1200&q=80",
+        roadmap: [
+          { label: "Concept & Design", status: "done" },
+          { label: "Prototype Chassis", status: "done" },
+          { label: "Drivetrain Integration", status: "current" },
+          { label: "Solar Regen System", status: "upcoming" },
+          { label: "Road Testing", status: "upcoming" }
         ],
         timeline: [
-          { type: 'tested', date: 'Jul 2026', title: 'Load Test' },
-          { type: 'donation', date: 'Jun 2026', title: 'Top Donator: @crypto' }
+          { date: "2026-03-01", type: "bought", text: "Ordered 6061-T6 aluminum square tubes for subframe v2." },
+          { date: "2026-02-18", type: "assembled", text: "Front suspension A-arms bolted to test chassis." }
         ]
       },
       aimee: {
-        name: 'AIMEE', badge: 'AI', tagline: 'AI-driven organizational orchestration platform.',
-        cover: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2065&auto=format&fit=crop',
-        stats: [
-          { label: 'Progress', value: '35%' }, { label: 'Donated', value: '8,400 PAC' },
-          { label: 'Started', value: 'Mar 2026' }, { label: 'Contributors', value: '7' }
+        name: "AIMEE",
+        badge: "AI",
+        tagline: "Context-aware AI companion operating entirely on-device with zero cloud dependencies.",
+        cover: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80",
+        roadmap: [
+          { label: "Dataset Curation", status: "done" },
+          { label: "Quantization Test", status: "done" },
+          { label: "NPU Acceleration", status: "current" },
+          { label: "Voice Pipeline", status: "upcoming" }
         ],
-        timeline: []
+        timeline: [
+          { date: "2026-03-04", type: "tested", text: "Tested 3-bit AWQ quantized model on Snapdragon NPU." }
+        ]
+      },
+      march: {
+        name: "MARCH",
+        badge: "MA",
+        tagline: "Open hardware desktop CNC platform with sub-20-micron repeatability.",
+        cover: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80",
+        roadmap: [
+          { label: "Frame Stress FEA", status: "done" },
+          { label: "Ballscrew Alignment", status: "current" },
+          { label: "Controller Board", status: "upcoming" }
+        ],
+        timeline: [
+          { date: "2026-03-02", type: "designed", text: "Completed kinematic mount design for Z-axis spindle." }
+        ]
       }
     };
 
-    function adminApp() {
-      return {
-        isAuthenticated: false,
-        pin: '',
-        activeProject: 'ecoro',
-        data: {},
-        
-        init() {
-          const saved = localStorage.getItem('customDashboardData');
-          this.data = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(defaultData));
-        },
-        checkPin() {
-          if (this.pin === '1234') this.isAuthenticated = true;
-          else alert('Incorrect PIN');
-        },
-        saveData() {
-          localStorage.setItem('customDashboardData', JSON.stringify(this.data));
-          alert('Saved! If you refresh the main website, it will show these changes.');
-        },
-        resetData() {
-          if (confirm('Are you sure you want to revert everything to default?')) {
-            localStorage.removeItem('customDashboardData');
-            this.data = JSON.parse(JSON.stringify(defaultData));
-          }
-        },
-        get timelineString() {
-          return this.data[this.activeProject] ? JSON.stringify(this.data[this.activeProject].timeline, null, 2) : '';
-        },
-        updateTimeline(e) {
-          try {
-            this.data[this.activeProject].timeline = JSON.parse(e.target.value);
-          } catch(err) {
-            alert('Invalid JSON formatting in Timeline! Please fix.');
-          }
-        }
+    // Load from LocalStorage or initialize with default data
+    let db = JSON.parse(localStorage.getItem('customDashboardData')) || DEFAULT_DATA;
+    let activeKey = 'ecoro';
+
+    function verifyPin() {
+      const pin = document.getElementById('pinInput').value;
+      if (pin === '1234') {
+        document.getElementById('authOverlay').style.display = 'none';
+        loadProject(activeKey);
+      } else {
+        alert('Invalid PIN');
       }
+    }
+
+    function switchProject(key, el) {
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      el.classList.add('active');
+      activeKey = key;
+      loadProject(key);
+    }
+
+    function loadProject(key) {
+      const p = db[key];
+      document.getElementById('currentProjectTitle').innerText = `Editing: ${p.name}`;
+      document.getElementById('projName').value = p.name;
+      document.getElementById('projBadge').value = p.badge;
+      document.getElementById('projTagline').value = p.tagline;
+      document.getElementById('projCover').value = p.cover;
+
+      renderRoadmap(p.roadmap || []);
+      renderTimeline(p.timeline || []);
+    }
+
+    function renderRoadmap(steps) {
+      const list = document.getElementById('roadmapList');
+      list.innerHTML = '';
+      steps.forEach((s, idx) => {
+        list.innerHTML += `
+          <div class="dynamic-item">
+            <span style="font-family:var(--font-mono); font-size:0.7rem; color:var(--muted);">${idx + 1}.</span>
+            <input type="text" value="${s.label}" onchange="updateRoadmapLabel(${idx}, this.value)" />
+            <select onchange="updateRoadmapStatus(${idx}, this.value)">
+              <option value="done" ${s.status === 'done' ? 'selected' : ''}>Done</option>
+              <option value="current" ${s.status === 'current' ? 'selected' : ''}>In Progress</option>
+              <option value="upcoming" ${s.status === 'upcoming' ? 'selected' : ''}>Upcoming</option>
+            </select>
+            <button class="btn btn-danger" onclick="removeRoadmapStep(${idx})">✕</button>
+          </div>
+        `;
+      });
+    }
+
+    function renderTimeline(events) {
+      const list = document.getElementById('timelineList');
+      list.innerHTML = '';
+      events.forEach((t, idx) => {
+        list.innerHTML += `
+          <div class="dynamic-item">
+            <input type="date" value="${t.date}" style="font-size:0.75rem;" onchange="updateTimelineDate(${idx}, this.value)" />
+            <input type="text" value="${t.text}" onchange="updateTimelineText(${idx}, this.value)" />
+            <select onchange="updateTimelineType(${idx}, this.value)">
+              <option value="bought" ${t.type === 'bought' ? 'selected' : ''}>Bought</option>
+              <option value="assembled" ${t.type === 'assembled' ? 'selected' : ''}>Assembled</option>
+              <option value="tested" ${t.type === 'tested' ? 'selected' : ''}>Tested</option>
+              <option value="designed" ${t.type === 'designed' ? 'selected' : ''}>Designed</option>
+            </select>
+            <button class="btn btn-danger" onclick="removeTimelineEntry(${idx})">✕</button>
+          </div>
+        `;
+      });
+    }
+
+    // Roadmap manipulations
+    function addRoadmapStep() {
+      if (!db[activeKey].roadmap) db[activeKey].roadmap = [];
+      db[activeKey].roadmap.push({ label: "New Milestone", status: "upcoming" });
+      renderRoadmap(db[activeKey].roadmap);
+    }
+    function updateRoadmapLabel(idx, val) { db[activeKey].roadmap[idx].label = val; }
+    function updateRoadmapStatus(idx, val) { db[activeKey].roadmap[idx].status = val; }
+    function removeRoadmapStep(idx) {
+      db[activeKey].roadmap.splice(idx, 1);
+      renderRoadmap(db[activeKey].roadmap);
+    }
+
+    // Timeline manipulations
+    function addTimelineEntry() {
+      if (!db[activeKey].timeline) db[activeKey].timeline = [];
+      db[activeKey].timeline.unshift({ date: new Date().toISOString().split('T')[0], type: "tested", text: "New event entry." });
+      renderTimeline(db[activeKey].timeline);
+    }
+    function updateTimelineDate(idx, val) { db[activeKey].timeline[idx].date = val; }
+    function updateTimelineText(idx, val) { db[activeKey].timeline[idx].text = val; }
+    function updateTimelineType(idx, val) { db[activeKey].timeline[idx].type = val; }
+    function removeTimelineEntry(idx) {
+      db[activeKey].timeline.splice(idx, 1);
+      renderTimeline(db[activeKey].timeline);
+    }
+
+    // Save to LocalStorage
+    function saveCurrentProject() {
+      db[activeKey].name = document.getElementById('projName').value;
+      db[activeKey].badge = document.getElementById('projBadge').value;
+      db[activeKey].tagline = document.getElementById('projTagline').value;
+      db[activeKey].cover = document.getElementById('projCover').value;
+
+      localStorage.setItem('customDashboardData', JSON.stringify(db));
+      alert(`Project "${db[activeKey].name}" updated and saved successfully!`);
+    }
+
+    // Export JSON
+    function exportJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db, null, 2));
+      const dlAnchor = document.createElement('a');
+      dlAnchor.setAttribute("href", dataStr);
+      dlAnchor.setAttribute("download", "dashboardData.json");
+      dlAnchor.click();
     }
   </script>
 </body>
