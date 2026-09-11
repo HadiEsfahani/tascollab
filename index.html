@@ -4,14 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Projects Showcase | Open Innovation</title>
-  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src * 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src *; style-src * 'unsafe-inline';">
-
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <!-- Supabase client (used to store contribution/collaboration submissions) -->
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
@@ -1180,18 +1179,17 @@
     // 3. Paste your Project URL and anon/public API key below
     //    (Project Settings -> API in the Supabase dashboard).
     // ------------------------------------------------------------
-const supabaseUrl = 'https://druoddpcdykwjtntffjc.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydW9kZHBjZHlrd2p0bnRmZmpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkwNjQ1MTUsImV4cCI6MjEwNDY0MDUxNX0.xld1REqeSGSh0n9vc_pQM_rOPMS7ycZ216fx5fbW_Jc'; // کلید شما
-let supabaseClient = null;
+    const SUPABASE_URL = 'https://druoddpcdykwjtntffjc.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydW9kZHBjZHlrd2p0bnRmZmpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkwNjQ1MTUsImV4cCI6MjEwNDY0MDUxNX0.xld1REqeSGSh0n9vc_pQM_rOPMS7ycZ216fx5fbW_Jc';
 
-try {
-  if (typeof supabase !== 'undefined') {
-    supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
-  }
-} catch (e) {
-  console.warn("Supabase failed to load, continuing with static data.", e);
-}
+    const isSupabaseConfigured = !SUPABASE_URL.includes('YOUR_') && !SUPABASE_ANON_KEY.includes('YOUR_');
+    const supabaseClient = isSupabaseConfigured
+      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+      : null;
 
+    if (!isSupabaseConfigured) {
+      console.warn('Supabase is not configured yet — set SUPABASE_URL and SUPABASE_ANON_KEY at the top of the script to enable saving submissions.');
+    }
 
     // Accordion interaction
     const panels = document.querySelectorAll('.panel');
@@ -1303,13 +1301,105 @@ try {
       contribution: '#3ecf8e'
     };
 
-// Load data modified by Admin Dashboard, fallback to defaults if none exists:
-const customData = JSON.parse(localStorage.getItem('customDashboardData'));
-const dashboardData = customData || {
-  ecoro: { ... },
-  aimee: { ... },
-  march: { ... }
-};
+    const dashboardData = {
+      ecoro: {
+        name: 'E-CORO',
+        badge: 'EC',
+        tagline: 'A futuristic, ultra-minimal side-by-side electric tandem vehicle bridging the gap between an e-bike and a lightweight micro-car.',
+        cover: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=1600&q=80',
+        stats: [
+          { label: 'Progress', value: '65%' },
+          { label: 'Donated', value: '14,250 PAC' },
+          { label: 'Started', value: 'Jan 2026' },
+          { label: 'Contributors', value: '12' }
+        ],
+        roadmap: [
+          { title: 'Concept & Design', status: 'done' },
+          { title: 'Prototype Chassis', status: 'done' },
+          { title: 'Drivetrain Integration', status: 'current' },
+          { title: 'Solar Regen System', status: 'upcoming' },
+          { title: 'Road Testing', status: 'upcoming' },
+          { title: 'Production Prep', status: 'upcoming' }
+        ],
+        needs: [
+          { tag: 'Hardware', urgent: true, title: 'Source dual-motor drive units', desc: 'Need help sourcing or donating a matched pair of hub motors rated for the tandem drivetrain spec.' },
+          { tag: 'Design', title: 'Aerodynamic fairing pass', desc: 'Refine the monocoque fairing CAD to cut drag coefficient further ahead of wind-tunnel testing.' },
+          { tag: 'Software', title: 'BMS telemetry firmware', desc: 'Write firmware to stream battery-management-system data to the public dashboard in real time.' },
+          { tag: 'Testing', title: 'Closed-course test riders', desc: 'Looking for volunteers near the workshop to help log ride data on the first rolling prototype.' },
+          { tag: 'Funding', title: 'Wind-tunnel session', desc: 'Raise remaining PAC needed to book a half-day wind-tunnel slot for the fairing.' }
+        ],
+        timeline: [
+          { date: 'Jan 2026', type: 'designed', text: 'Initial concept sketches and layout locked; side-by-side tandem seating validated.' },
+          { date: 'Feb 2026', type: 'donation', text: '3,200 PAC donated by @crypto_vanguard to fund the first chassis jig.' },
+          { date: 'Mar 2026', type: 'bought', text: 'Aluminum extrusion and carbon-fiber sheet stock purchased for the monocoque tub.' },
+          { date: 'Apr 2026', type: 'assembled', text: 'First rolling chassis assembled on the shop jig.' },
+          { date: 'May 2026', type: 'contribution', text: '@alex_cad optimized the steering knuckle geometry, cutting unsprung weight by 14%.' },
+          { date: 'Jul 2026', type: 'tested', text: 'Static structural load test of the chassis passed at 1.8x rated payload.' }
+        ]
+      },
+      aimee: {
+        name: 'AIMEE',
+        badge: 'AI',
+        tagline: 'A uniform, all-in-one platform that helps organizations manage themselves using AI, orchestrating teams, tools, and data through self-generating workflows.',
+        cover: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1600&q=80',
+        stats: [
+          { label: 'Progress', value: '35%' },
+          { label: 'Donated', value: '8,400 PAC' },
+          { label: 'Started', value: 'Mar 2026' },
+          { label: 'Contributors', value: '7' }
+        ],
+        roadmap: [
+          { title: 'Core Architecture', status: 'done' },
+          { title: 'Workflow Engine Prototype', status: 'done' },
+          { title: 'Multi-Agent Orchestration', status: 'current' },
+          { title: 'Enterprise Integrations', status: 'upcoming' },
+          { title: 'Public Beta', status: 'upcoming' }
+        ],
+        needs: [
+          { tag: 'Software', urgent: true, title: 'Agent-to-agent messaging spec', desc: 'Design a lightweight protocol for AIMEE agents to negotiate task ownership without a central bottleneck.' },
+          { tag: 'Design', title: 'Admin console UX', desc: 'Wireframe the organization-admin console for reviewing and approving AI-generated workflows.' },
+          { tag: 'Docs', title: 'Contributor onboarding guide', desc: 'Write a getting-started doc so new contributors can spin up a local AIMEE instance in under 15 minutes.' },
+          { tag: 'Testing', title: 'Load-test the workflow engine', desc: 'Stress-test the self-generating workflow engine against 500+ concurrent simulated tasks.' }
+        ],
+        timeline: [
+          { date: 'Mar 2026', type: 'designed', text: 'Core architecture and data model for organization-wide orchestration finalized.' },
+          { date: 'Apr 2026', type: 'donation', text: '2,100 PAC donated by @nova_stack to fund initial compute for prototyping.' },
+          { date: 'May 2026', type: 'contribution', text: '@dana_ml built the initial workflow-generation engine prototype using task-decomposition models.' },
+          { date: 'Jul 2026', type: 'tested', text: 'First end-to-end test of a self-generating workflow completed successfully in a sandbox org.' }
+        ]
+      },
+      march: {
+        name: 'MARCH',
+        badge: 'MA',
+        tagline: 'An augmented-reality game that projects a full battlefield onto the floor around you, letting you deploy troops and armor directly into the live terrain.',
+        cover: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=1600&q=80',
+        stats: [
+          { label: 'Progress', value: '15%' },
+          { label: 'Donated', value: '3,150 PAC' },
+          { label: 'Started', value: 'Jun 2026' },
+          { label: 'Contributors', value: '4' }
+        ],
+        roadmap: [
+          { title: 'Concept & Floor Detection', status: 'done' },
+          { title: 'AR Terrain Engine', status: 'current' },
+          { title: 'Troop AI & Pathfinding', status: 'upcoming' },
+          { title: 'Multiplayer Sync', status: 'upcoming' },
+          { title: 'Public Demo', status: 'upcoming' }
+        ],
+        needs: [
+          { tag: 'Software', urgent: true, title: 'Procedural terrain generator', desc: 'Build a system that turns a scanned room into a believable battlefield with cover and elevation.' },
+          { tag: 'Design', title: 'Unit silhouette art pass', desc: 'Design readable, stylized silhouettes for the first roster of troops and armor units.' },
+          { tag: 'Hardware', title: 'Test devices needed', desc: 'Donate or lend a spare AR-capable phone or headset for expanded device testing.' },
+          { tag: 'Testing', title: 'Floor-tracking QA', desc: 'Help stress-test floor-plane detection across different lighting and flooring conditions.' }
+        ],
+        timeline: [
+          { date: 'Jun 2026', type: 'designed', text: 'Core AR battlefield concept and camera-to-floor mapping approach designed.' },
+          { date: 'Jul 2026', type: 'donation', text: '1,400 PAC donated by @pixel_forge toward AR SDK licensing.' },
+          { date: 'Aug 2026', type: 'contribution', text: '@unity_kai implemented floor-plane detection and troop-placement snapping.' },
+          { date: 'Aug 2026', type: 'tested', text: 'First indoor playtest of floor-tracking accuracy across three room types.' }
+        ]
+      }
+    };
 
     let dashState = null; // { key, sourcePanel, overlay, sourceRect }
 
@@ -1459,44 +1549,6 @@ const dashboardData = customData || {
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && dashState) closeDashboard();
     });
-
-    // --- بارگذاری داینامیک محتوا از Supabase به صورت ایمن ---
-    async function fetchLiveContent() {
-      try {
-        if (typeof supabaseClient === 'undefined' || !supabaseClient) return;
-
-        const { data, error } = await supabaseClient
-          .from('site_config')
-          .select('data')
-          .eq('id', 'main_content')
-          .maybeSingle();
-
-        if (error || !data || !data.data) return;
-
-        const config = data.data;
-
-        // ۱. عنوان صفحه و هدرها
-        if (config.title) document.title = config.title;
-        const mainH1 = document.querySelector('header h1');
-        if (mainH1 && config.headerTitle) mainH1.textContent = config.headerTitle;
-        const mainSub = document.querySelector('header p');
-        if (mainSub && config.headerSubtitle) mainSub.textContent = config.headerSubtitle;
-
-        // ۲. بروزرسانی اطلاعات تکمیلی پروژه‌ها (Tasks, Roadmap, Timeline)
-        if (config.projects && Array.isArray(config.projects) && typeof dashboardData !== 'undefined') {
-          config.projects.forEach(p => {
-            if (p.id && p.dashboardData) {
-              dashboardData[p.id] = p.dashboardData;
-            }
-          });
-        }
-      } catch (err) {
-        console.warn("Using fallback static data:", err);
-      }
-    }
-
-    // فراخوانی مستقیم و ایمن
-    fetchLiveContent();
   </script>
 </body>
 </html>
