@@ -1301,136 +1301,105 @@
       contribution: '#3ecf8e'
     };
 
-// --- ۱. داده‌های اولیه و پیش‌فرض (کد دیفالت شما بدون تغییر) ---
-const DEFAULT_PROJECTS = {
-  ecoro: {
-    name: 'E-CORO',
-    badge: 'Hardware / Robotics',
-    tagline: 'Autonomous Agricultural Robot',
-    cover: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1200&auto=format&fit=crop&q=80',
-    stats: [
-      { label: 'Overall Progress', value: '65%' },
-      { label: 'Funds Raised',     value: '14,250 PAC' },
-      { label: 'Contributors',     value: '12' },
-      { label: 'Status',           value: 'Prototyping' }
-    ],
-    roadmap: [
-      { phase: 'Phase 1', title: 'Conceptual Design & Simulation', status: 'done' },
-      { phase: 'Phase 2', title: 'Chassis & Drive System Prototyping', status: 'done' },
-      { phase: 'Phase 3', title: 'Autonomous Navigation (SLAM + RTK)', status: 'active' },
-      { phase: 'Phase 4', title: 'Sensor Suite & Crop Diagnostics Integration', status: 'pending' },
-      { phase: 'Phase 5', title: 'Field Trials & Safety Validation', status: 'pending' },
-      { phase: 'Phase 6', title: 'Open-Source Hardware Release (v1.0)', status: 'pending' }
-    ],
-    needs: [
-      { title: 'Computer Vision Engineer', tag: 'ROS2 / OpenCV', desc: 'Need help tuning RTK-GPS fusion and obstacle avoidance on terrain.' },
-      { title: 'Embedded Electronics Designer', tag: 'KiCad / STM32', desc: 'PCB layout for power distribution and motor driver protection circuitry.' }
-    ],
-    timeline: [
-      { type: 'tested',   date: '2025-05-18', desc: 'Chassis drive test completed on uneven terrain (successful).' },
-      { type: 'designed', date: '2025-04-10', desc: 'Schematics v0.4 finalized for power distro board.' },
-      { type: 'bought',   date: '2025-03-02', desc: 'Received high-torque brushless hub motors and LiFePO4 pack.' }
-    ]
-  },
-  aimee: {
-    name: 'AIMEE',
-    badge: 'AI / Open-Source',
-    tagline: 'Localized Multilingual AI Agent',
-    cover: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&auto=format&fit=crop&q=80',
-    stats: [
-      { label: 'Overall Progress', value: '35%' },
-      { label: 'Funds Raised',     value: '8,400 PAC' },
-      { label: 'Contributors',     value: '7' },
-      { label: 'Status',           value: 'Fine-Tuning' }
-    ],
-    roadmap: [
-      { phase: 'Phase 1', title: 'Corpus Collection & Data Cleansing', status: 'done' },
-      { phase: 'Phase 2', title: 'Tokenizer Adaptation for Target Languages', status: 'done' },
-      { phase: 'Phase 3', title: 'Instruction Fine-Tuning (7B & 14B)', status: 'active' },
-      { phase: 'Phase 4', title: 'Safety Alignment & RLHF / DPO', status: 'pending' },
-      { phase: 'Phase 5', title: 'Public Web UI & Local Inference API Release', status: 'pending' }
-    ],
-    needs: [
-      { title: 'Data Curation Lead', tag: 'NLP / Dataset', desc: 'Help curate high-quality conversational datasets in low-resource languages.' },
-      { title: 'Quantization & Inference Specialist', tag: 'vLLM / llama.cpp', desc: 'Optimize inference for edge hardware and mid-range GPUs.' }
-    ],
-    timeline: [
-      { type: 'designed', date: '2025-05-28', desc: 'Completed evaluation benchmark suite on 1,200 domain-specific prompts.' },
-      { type: 'tested',   date: '2025-05-01', desc: 'Initial LoRA checkpoint trained on 50k instruction pairs.' }
-    ]
-  },
-  march: {
-    name: 'MARCH',
-    badge: 'IoT / Environmental',
-    tagline: 'Distributed Air Quality Network',
-    cover: 'https://images.unsplash.com/photo-1532601224476-15c79f2f7a51?w=1200&auto=format&fit=crop&q=80',
-    stats: [
-      { label: 'Overall Progress', value: '15%' },
-      { label: 'Funds Raised',     value: '3,150 PAC' },
-      { label: 'Contributors',     value: '4' },
-      { label: 'Status',           value: 'Sensor Selection' }
-    ],
-    roadmap: [
-      { phase: 'Phase 1', title: 'Sensor Benchmarking & Power Profiling', status: 'active' },
-      { phase: 'Phase 2', title: 'Ultra-Low-Power Enclosure Design', status: 'pending' },
-      { phase: 'Phase 3', title: 'LoRaWAN & Mesh Firmware Implementation', status: 'pending' },
-      { phase: 'Phase 4', title: 'Decentralized Data Ingestion Pipeline', status: 'pending' },
-      { phase: 'Phase 5', title: 'First 50-Node Urban Deployment', status: 'pending' }
-    ],
-    needs: [
-      { title: 'LoRaWAN Firmware Dev', tag: 'C++ / Zephyr RTOS', desc: 'Build low-power sleep/wake cycle firmware for ESP32 + SX1262 nodes.' },
-      { title: 'Industrial Enclosure Designer', tag: 'CAD / Weatherproofing', desc: 'Design IP67 3D-printable housing with solar mount bracket.' }
-    ],
-    timeline: [
-      { type: 'tested',   date: '2025-06-02', desc: 'Benchmarked PMS5003 vs Sensirion SPS30 particulate sensors.' },
-      { type: 'bought',   date: '2025-05-15', desc: 'Sample batch of optical dust sensors and solar panels delivered.' }
-    ]
-  }
-};
-
-// ۲. متغیر اصلی داده‌ها با بارگذاری از کش محلی (Offline-First)
-let dashboardData = (function loadInitialData() {
-  try {
-    const cached = localStorage.getItem('app_dashboard_data');
-    if (cached) {
-      return JSON.parse(cached);
-    }
-  } catch (e) {
-    console.warn('LocalStorage not available, falling back to default.');
-  }
-  return JSON.parse(JSON.stringify(DEFAULT_PROJECTS));
-})();
-
-// ۳. به‌روزرسانی نامحسوس از Supabase (Background Sync)
-async function syncProjectDataFromSupabase() {
-  if (!isSupabaseConfigured()) return;
-  try {
-    const { data, error } = await supabaseClient
-      .from('project_configs')
-      .select('id, data');
-
-    if (error) throw error;
-
-    if (data && data.length > 0) {
-      data.forEach(item => {
-        if (dashboardData[item.id]) {
-          dashboardData[item.id] = { ...dashboardData[item.id], ...item.data };
-        } else {
-          dashboardData[item.id] = item.data;
-        }
-      });
-      // کش کردن آخرین نسخه دریافت شده در localStorage
-      localStorage.setItem('app_dashboard_data', JSON.stringify(dashboardData));
-      console.log('Project data successfully synced with Supabase.');
-    }
-  } catch (err) {
-    console.warn('Could not sync with Supabase (Offline or Network issue). Using cached/default data.', err.message);
-  }
-}
-
-// صدا زدن بدون وقفه هنگام لود صفحه
-syncProjectDataFromSupabase();
-
+    const dashboardData = {
+      ecoro: {
+        name: 'E-CORO',
+        badge: 'EC',
+        tagline: 'A futuristic, ultra-minimal side-by-side electric tandem vehicle bridging the gap between an e-bike and a lightweight micro-car.',
+        cover: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=1600&q=80',
+        stats: [
+          { label: 'Progress', value: '65%' },
+          { label: 'Donated', value: '14,250 PAC' },
+          { label: 'Started', value: 'Jan 2026' },
+          { label: 'Contributors', value: '12' }
+        ],
+        roadmap: [
+          { title: 'Concept & Design', status: 'done' },
+          { title: 'Prototype Chassis', status: 'done' },
+          { title: 'Drivetrain Integration', status: 'current' },
+          { title: 'Solar Regen System', status: 'upcoming' },
+          { title: 'Road Testing', status: 'upcoming' },
+          { title: 'Production Prep', status: 'upcoming' }
+        ],
+        needs: [
+          { tag: 'Hardware', urgent: true, title: 'Source dual-motor drive units', desc: 'Need help sourcing or donating a matched pair of hub motors rated for the tandem drivetrain spec.' },
+          { tag: 'Design', title: 'Aerodynamic fairing pass', desc: 'Refine the monocoque fairing CAD to cut drag coefficient further ahead of wind-tunnel testing.' },
+          { tag: 'Software', title: 'BMS telemetry firmware', desc: 'Write firmware to stream battery-management-system data to the public dashboard in real time.' },
+          { tag: 'Testing', title: 'Closed-course test riders', desc: 'Looking for volunteers near the workshop to help log ride data on the first rolling prototype.' },
+          { tag: 'Funding', title: 'Wind-tunnel session', desc: 'Raise remaining PAC needed to book a half-day wind-tunnel slot for the fairing.' }
+        ],
+        timeline: [
+          { date: 'Jan 2026', type: 'designed', text: 'Initial concept sketches and layout locked; side-by-side tandem seating validated.' },
+          { date: 'Feb 2026', type: 'donation', text: '3,200 PAC donated by @crypto_vanguard to fund the first chassis jig.' },
+          { date: 'Mar 2026', type: 'bought', text: 'Aluminum extrusion and carbon-fiber sheet stock purchased for the monocoque tub.' },
+          { date: 'Apr 2026', type: 'assembled', text: 'First rolling chassis assembled on the shop jig.' },
+          { date: 'May 2026', type: 'contribution', text: '@alex_cad optimized the steering knuckle geometry, cutting unsprung weight by 14%.' },
+          { date: 'Jul 2026', type: 'tested', text: 'Static structural load test of the chassis passed at 1.8x rated payload.' }
+        ]
+      },
+      aimee: {
+        name: 'AIMEE',
+        badge: 'AI',
+        tagline: 'A uniform, all-in-one platform that helps organizations manage themselves using AI, orchestrating teams, tools, and data through self-generating workflows.',
+        cover: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1600&q=80',
+        stats: [
+          { label: 'Progress', value: '35%' },
+          { label: 'Donated', value: '8,400 PAC' },
+          { label: 'Started', value: 'Mar 2026' },
+          { label: 'Contributors', value: '7' }
+        ],
+        roadmap: [
+          { title: 'Core Architecture', status: 'done' },
+          { title: 'Workflow Engine Prototype', status: 'done' },
+          { title: 'Multi-Agent Orchestration', status: 'current' },
+          { title: 'Enterprise Integrations', status: 'upcoming' },
+          { title: 'Public Beta', status: 'upcoming' }
+        ],
+        needs: [
+          { tag: 'Software', urgent: true, title: 'Agent-to-agent messaging spec', desc: 'Design a lightweight protocol for AIMEE agents to negotiate task ownership without a central bottleneck.' },
+          { tag: 'Design', title: 'Admin console UX', desc: 'Wireframe the organization-admin console for reviewing and approving AI-generated workflows.' },
+          { tag: 'Docs', title: 'Contributor onboarding guide', desc: 'Write a getting-started doc so new contributors can spin up a local AIMEE instance in under 15 minutes.' },
+          { tag: 'Testing', title: 'Load-test the workflow engine', desc: 'Stress-test the self-generating workflow engine against 500+ concurrent simulated tasks.' }
+        ],
+        timeline: [
+          { date: 'Mar 2026', type: 'designed', text: 'Core architecture and data model for organization-wide orchestration finalized.' },
+          { date: 'Apr 2026', type: 'donation', text: '2,100 PAC donated by @nova_stack to fund initial compute for prototyping.' },
+          { date: 'May 2026', type: 'contribution', text: '@dana_ml built the initial workflow-generation engine prototype using task-decomposition models.' },
+          { date: 'Jul 2026', type: 'tested', text: 'First end-to-end test of a self-generating workflow completed successfully in a sandbox org.' }
+        ]
+      },
+      march: {
+        name: 'MARCH',
+        badge: 'MA',
+        tagline: 'An augmented-reality game that projects a full battlefield onto the floor around you, letting you deploy troops and armor directly into the live terrain.',
+        cover: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=1600&q=80',
+        stats: [
+          { label: 'Progress', value: '15%' },
+          { label: 'Donated', value: '3,150 PAC' },
+          { label: 'Started', value: 'Jun 2026' },
+          { label: 'Contributors', value: '4' }
+        ],
+        roadmap: [
+          { title: 'Concept & Floor Detection', status: 'done' },
+          { title: 'AR Terrain Engine', status: 'current' },
+          { title: 'Troop AI & Pathfinding', status: 'upcoming' },
+          { title: 'Multiplayer Sync', status: 'upcoming' },
+          { title: 'Public Demo', status: 'upcoming' }
+        ],
+        needs: [
+          { tag: 'Software', urgent: true, title: 'Procedural terrain generator', desc: 'Build a system that turns a scanned room into a believable battlefield with cover and elevation.' },
+          { tag: 'Design', title: 'Unit silhouette art pass', desc: 'Design readable, stylized silhouettes for the first roster of troops and armor units.' },
+          { tag: 'Hardware', title: 'Test devices needed', desc: 'Donate or lend a spare AR-capable phone or headset for expanded device testing.' },
+          { tag: 'Testing', title: 'Floor-tracking QA', desc: 'Help stress-test floor-plane detection across different lighting and flooring conditions.' }
+        ],
+        timeline: [
+          { date: 'Jun 2026', type: 'designed', text: 'Core AR battlefield concept and camera-to-floor mapping approach designed.' },
+          { date: 'Jul 2026', type: 'donation', text: '1,400 PAC donated by @pixel_forge toward AR SDK licensing.' },
+          { date: 'Aug 2026', type: 'contribution', text: '@unity_kai implemented floor-plane detection and troop-placement snapping.' },
+          { date: 'Aug 2026', type: 'tested', text: 'First indoor playtest of floor-tracking accuracy across three room types.' }
+        ]
+      }
+    };
 
     let dashState = null; // { key, sourcePanel, overlay, sourceRect }
 
