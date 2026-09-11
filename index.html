@@ -1457,6 +1457,37 @@ const dashboardData = customData || {
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && dashState) closeDashboard();
     });
+        // --- بارگذاری داینامیک محتوا از دیتابیس Supabase ---
+    async function fetchLiveContent() {
+      if (!supabaseClient) return;
+      try {
+        const { data, error } = await supabaseClient.from('site_config').select('data').eq('id', 'main_content').single();
+        if (error || !data || !data.data) return;
+
+        const config = data.data;
+
+        // ۱. بروزرسانی عنوان تب و متون هدر
+        if (config.title) document.title = config.title;
+        const mainH1 = document.querySelector('header h1');
+        if (mainH1 && config.headerTitle) mainH1.textContent = config.headerTitle;
+        const mainSub = document.querySelector('header p');
+        if (mainSub && config.headerSubtitle) mainSub.textContent = config.headerSubtitle;
+
+        // ۲. بروزرسانی اطلاعات تکمیلی پروژه‌ها (Tasks, Roadmap, Timeline)
+        if (config.projects && Array.isArray(config.projects)) {
+          config.projects.forEach(p => {
+            if (p.id && p.dashboardData && typeof dashboardData !== 'undefined') {
+              dashboardData[p.id] = p.dashboardData;
+            }
+          });
+        }
+      } catch (err) {
+        console.warn("Using embedded fallback data:", err);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', fetchLiveContent);
+
   </script>
 </body>
 </html>
