@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Projects</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="bg-gray-900 text-gray-200 font-sans p-6 min-h-screen" x-data="adminApp()">
+
+  <!-- PIN Protection -->
+  <div x-show="!isAuthenticated" class="max-w-sm mx-auto mt-20 bg-gray-800 p-8 rounded-lg shadow-lg border border-gray-700">
+    <h2 class="text-2xl font-bold mb-4 text-white">Admin Login</h2>
+    <input type="password" x-model="pin" placeholder="Enter PIN (1234)" class="w-full p-3 rounded bg-gray-900 border border-gray-600 focus:border-green-500 text-white mb-4">
+    <button @click="checkPin()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded transition">Login</button>
+  </div>
+
+  <!-- Dashboard -->
+  <div x-show="isAuthenticated" x-cloak class="max-w-5xl mx-auto">
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-bold text-white">Project Data Manager</h1>
+      <div>
+        <button @click="saveData()" class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded font-bold shadow transition">💾 Save to Website</button>
+        <button @click="resetData()" class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded font-bold shadow transition ml-2">⚠️ Reset to Defaults</button>
+      </div>
+    </div>
+
+    <!-- Project Selector -->
+    <div class="flex space-x-4 mb-6">
+      <template x-for="(project, key) in data" :key="key">
+        <button @click="activeProject = key" 
+                :class="activeProject === key ? 'bg-blue-600 border-blue-400' : 'bg-gray-800 border-gray-700'"
+                class="px-6 py-3 rounded-lg border text-lg font-bold transition" x-text="project.name"></button>
+      </template>
+    </div>
+
+    <!-- Editor -->
+    <div x-show="activeProject" class="bg-gray-800 p-6 rounded-lg border border-gray-700 shadow-xl">
+      <h2 class="text-xl font-bold text-blue-400 mb-4" x-text="'Editing: ' + data[activeProject]?.name"></h2>
+
+      <!-- General Info -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Tagline</label>
+          <input x-model="data[activeProject].tagline" class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-sm">
+        </div>
+        <div>
+          <label class="block text-sm text-gray-400 mb-1">Cover Image URL</label>
+          <input x-model="data[activeProject].cover" class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-sm">
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <h3 class="font-bold border-b border-gray-700 pb-2 mb-4 mt-6">Stats (Progress, Donators, etc.)</h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <template x-for="(stat, index) in data[activeProject]?.stats" :key="index">
+          <div class="bg-gray-900 p-3 rounded border border-gray-700">
+            <input x-model="stat.label" class="w-full bg-transparent text-gray-400 text-xs mb-1 outline-none" placeholder="Label">
+            <input x-model="stat.value" class="w-full bg-transparent text-white font-bold outline-none" placeholder="Value">
+          </div>
+        </template>
+      </div>
+
+      <!-- Timeline Data as JSON to allow quick complex edits -->
+      <h3 class="font-bold border-b border-gray-700 pb-2 mb-4 mt-6">Timeline Data (Advanced Edit)</h3>
+      <p class="text-xs text-gray-400 mb-2">Modify the timeline directly. Types available: bought, designed, assembled, tested, donation, contribution.</p>
+      <textarea x-model="timelineString" @blur="updateTimeline" class="w-full h-48 bg-gray-900 border border-gray-700 rounded p-3 font-mono text-sm text-green-400"></textarea>
+
+    </div>
+  </div>
+
+  <script>
+    // Copy the original data from index (9).html as the fallback
+    const defaultData = {
+      ecoro: {
+        name: 'E-CORO', badge: 'EC', tagline: 'A futuristic, ultra-minimal side-by-side electric tandem vehicle...',
+        cover: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=2070&auto=format&fit=crop',
+        stats: [
+          { label: 'Progress', value: '65%' }, { label: 'Donated', value: '14,250 PAC' },
+          { label: 'Started', value: 'Jan 2026' }, { label: 'Contributors', value: '12' }
+        ],
+        timeline: [
+          { type: 'tested', date: 'Jul 2026', title: 'Load Test' },
+          { type: 'donation', date: 'Jun 2026', title: 'Top Donator: @crypto' }
+        ]
+      },
+      aimee: {
+        name: 'AIMEE', badge: 'AI', tagline: 'AI-driven organizational orchestration platform.',
+        cover: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2065&auto=format&fit=crop',
+        stats: [
+          { label: 'Progress', value: '35%' }, { label: 'Donated', value: '8,400 PAC' },
+          { label: 'Started', value: 'Mar 2026' }, { label: 'Contributors', value: '7' }
+        ],
+        timeline: []
+      }
+    };
+
+    function adminApp() {
+      return {
+        isAuthenticated: false,
+        pin: '',
+        activeProject: 'ecoro',
+        data: {},
+        
+        init() {
+          const saved = localStorage.getItem('customDashboardData');
+          this.data = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(defaultData));
+        },
+        checkPin() {
+          if (this.pin === '1234') this.isAuthenticated = true;
+          else alert('Incorrect PIN');
+        },
+        saveData() {
+          localStorage.setItem('customDashboardData', JSON.stringify(this.data));
+          alert('Saved! If you refresh the main website, it will show these changes.');
+        },
+        resetData() {
+          if (confirm('Are you sure you want to revert everything to default?')) {
+            localStorage.removeItem('customDashboardData');
+            this.data = JSON.parse(JSON.stringify(defaultData));
+          }
+        },
+        get timelineString() {
+          return this.data[this.activeProject] ? JSON.stringify(this.data[this.activeProject].timeline, null, 2) : '';
+        },
+        updateTimeline(e) {
+          try {
+            this.data[this.activeProject].timeline = JSON.parse(e.target.value);
+          } catch(err) {
+            alert('Invalid JSON formatting in Timeline! Please fix.');
+          }
+        }
+      }
+    }
+  </script>
+</body>
+</html>
