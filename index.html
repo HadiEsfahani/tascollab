@@ -74,22 +74,30 @@
 
     /* Accordion Container */
     .accordion {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      display: flex;
+      flex-direction: column;
       gap: 1rem;
       width: 100%;
-      align-items: start;
     }
 
-    @media (max-width: 991px) {
-      .accordion {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    /* Projects are grouped into rows of exactly 3. Each row keeps the
+       original expandable-panel behavior: one card grows while the
+       other cards in that row shrink. */
+    .project-row {
+      display: flex;
+      gap: 1rem;
+      width: 100%;
+    }
+
+    @media (min-width: 992px) {
+      .project-row {
+        height: 589px;
       }
     }
 
-    @media (max-width: 640px) {
-      .accordion {
-        grid-template-columns: 1fr;
+    @media (max-width: 991px) {
+      .project-row {
+        flex-direction: column;
       }
     }
 
@@ -108,10 +116,16 @@
                   border-color 0.3s ease;
     }
 
-    .panel.active {
-      cursor: default;
-      border-color: rgba(62, 207, 142, 0.5);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+    @media (min-width: 992px) {
+      .panel {
+        flex: 1;
+      }
+      .panel.active {
+        flex: 4.5;
+        cursor: default;
+        border-color: rgba(62, 207, 142, 0.5);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+      }
     }
 
     /* Vertical Progress Bar on very left edge */
@@ -1096,25 +1110,46 @@
     }
     function renderProjects() {
       const root=document.getElementById('projectAccordion');
-      root.innerHTML=Object.entries(dashboardData).map(([key,data],index)=>{
-        const progress=(data.stats.find(s=>s.label.toLowerCase()==='progress')||{}).value||'0%';
-        const progressNum=Math.max(0,Math.min(100,parseFloat(progress)||0));
-        const feed=(data.contributions||[]).map(c=>`<div class="contribution-item"><div class="contribution-meta"><strong>${escapeHTML(c.nickname)}</strong><span style="color:var(--brand-green);">Reward: ${escapeHTML(c.reward||'—')}</span></div><div>"${escapeHTML(c.message)}"</div><div class="admin-reply">↳ <strong>Admin:</strong> ${escapeHTML(c.reply||'')}</div></div>`).join('');
-        const stats=data.stats.map(s=>`<div class="metric-card"><span class="metric-label">${escapeHTML(s.label)}</span><span class="metric-value">${escapeHTML(s.value)}</span></div>`).join('');
-        return `<div class="panel ${index===0?'active':''}" data-progress="${progressNum}"><div class="progress-track"><div class="progress-fill" style="height:${progressNum}%;"></div></div><div class="panel-bg" style="background-image:url('${escapeHTML(data.cover)}');"></div><div class="panel-content"><div class="panel-header"><div class="project-logo-badge">${escapeHTML(data.badge)}</div><div><h2 class="project-title">${escapeHTML(data.name)}</h2></div><span class="collapsed-indicator">${progressNum}% DONE</span></div><div class="details-view"><p class="description">${escapeHTML(data.description)}</p><div class="metrics-grid">${stats}<div class="metric-card"><span class="metric-label">Top Donator</span><span class="metric-value">${escapeHTML(data.topDonator)}</span></div><div class="metric-card"><span class="metric-label">Top Contributor</span><span class="metric-value">${escapeHTML(data.topContributor)}</span></div></div><div class="actions-section"><div class="action-box"><h4>Donate via PAC</h4><div class="wallet-bar"><span class="wallet-address" id="wallet-${key}">${escapeHTML(data.wallet)}</span><button class="copy-btn" onclick="copyWallet('wallet-${key}',this)">Copy</button></div></div><div class="action-box"><h4>🛠️ Collaborate & Earn Bounties</h4><button class="btn-contribute" onclick="openModal('${escapeHTML(data.name)}')">Submit Contribution / Idea</button></div></div><div><span class="metric-label" style="display:block;margin-bottom:4px;">Recent Community Contributions & Bounties</span><div class="contributions-feed">${feed||'<div class="contribution-item">No contributions yet.</div>'}</div></div><div class="dashboard-link-container"><a href="#" class="dashboard-link" onclick="openDashboard('${key}',this,event)">Project Dashboard & Telemetry &rarr;</a></div></div></div></div>`;
-      }).join('');
-      document.querySelectorAll('.panel').forEach(panel=>panel.addEventListener('click',e=>{if(e.target.closest('button')||e.target.closest('a')||e.target.closest('input'))return;document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));panel.classList.add('active');}));
-    }
+      const entries=Object.entries(dashboardData);
 
+      // Keep the visual structure exactly the same, but group projects
+      // into rows of three so project #4 starts a new row.
+      const rows=[];
+      for(let i=0;i<entries.length;i+=3){
+        const rowEntries=entries.slice(i,i+3);
+        rows.push(`<div class="project-row">${rowEntries.map(([key,data],rowIndex)=>{
+          const globalIndex=i+rowIndex;
+          const progress=(data.stats.find(s=>s.label.toLowerCase()==='progress')||{}).value||'0%';
+          const progressNum=Math.max(0,Math.min(100,parseFloat(progress)||0));
+          const feed=(data.contributions||[]).map(c=>`<div class="contribution-item"><div class="contribution-meta"><strong>${escapeHTML(c.nickname)}</strong><span style="color:var(--brand-green);">Reward: ${escapeHTML(c.reward||'—')}</span></div><div>"${escapeHTML(c.message)}"</div><div class="admin-reply">↳ <strong>Admin:</strong> ${escapeHTML(c.reply||'')}</div></div>`).join('');
+          const stats=(data.stats||[]).map(s=>`<div class="metric-card"><span class="metric-label">${escapeHTML(s.label)}</span><span class="metric-value">${escapeHTML(s.value)}</span></div>`).join('');
+          return `<div class="panel ${globalIndex===0?'active':''}" data-progress="${progressNum}"><div class="progress-track"><div class="progress-fill" style="height:${progressNum}%;"></div></div><div class="panel-bg" style="background-image:url('${escapeHTML(data.cover)}');"></div><div class="panel-content"><div class="panel-header"><div class="project-logo-badge">${escapeHTML(data.badge)}</div><div><h2 class="project-title">${escapeHTML(data.name)}</h2></div><span class="collapsed-indicator">${progressNum}% DONE</span></div><div class="details-view"><p class="description">${escapeHTML(data.description)}</p><div class="metrics-grid">${stats}<div class="metric-card"><span class="metric-label">Top Donator</span><span class="metric-value">${escapeHTML(data.topDonator)}</span></div><div class="metric-card"><span class="metric-label">Top Contributor</span><span class="metric-value">${escapeHTML(data.topContributor)}</span></div></div><div class="actions-section"><div class="action-box"><h4>Donate via PAC</h4><div class="wallet-bar"><span class="wallet-address" id="wallet-${key}">${escapeHTML(data.wallet)}</span><button class="copy-btn" onclick="copyWallet('wallet-${key}',this)">Copy</button></div></div><div class="action-box"><h4>🛠️ Collaborate & Earn Bounties</h4><button class="btn-contribute" onclick="openModal('${escapeHTML(data.name)}')">Submit Contribution / Idea</button></div></div><div><span class="metric-label" style="display:block;margin-bottom:4px;">Recent Community Contributions & Bounties</span><div class="contributions-feed">${feed||'<div class="contribution-item">No contributions yet.</div>'}</div></div><div class="dashboard-link-container"><a href="#" class="dashboard-link" onclick="openDashboard('${key}',this,event)">Project Dashboard & Telemetry &rarr;</a></div></div></div></div>`;
+        }).join('')}</div>`);
+      }
+      root.innerHTML=rows.join('');
+
+      document.querySelectorAll('.panel').forEach(panel=>panel.addEventListener('click',e=>{
+        if(e.target.closest('button')||e.target.closest('a')||e.target.closest('input'))return;
+        const row=panel.closest('.project-row');
+        if(!row)return;
+        row.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+        panel.classList.add('active');
+      }));
+    }
     async function loadProjectData() {
       let cached=null; try { cached=JSON.parse(localStorage.getItem(PROJECT_CACHE_KEY)||'null'); } catch(e){}
-      if(cached && typeof cached==='object') dashboardData=Object.assign(structuredClone(DEFAULT_PROJECT_DATA),cached);
+      if(cached && typeof cached==='object') dashboardData=cached;
       renderProjects();
       if(!isSupabaseConfigured){ setSiteStatus(cached?'Offline — cached data':'Offline — default data','offline'); return; }
       try {
         const {data,error}=await supabaseClient.from('project_configs').select('project_key,data');
         if(error) throw error;
-        if(data?.length){ const remote={}; data.forEach(r=>remote[r.project_key]=r.data); dashboardData=Object.assign(structuredClone(DEFAULT_PROJECT_DATA),remote); localStorage.setItem(PROJECT_CACHE_KEY,JSON.stringify(remote)); renderProjects(); }
+        const remote={}; data.forEach(r=>remote[r.project_key]=r.data);
+        // A successful Supabase response is authoritative, including an
+        // empty result. This makes project deletion permanent.
+        dashboardData=remote;
+        localStorage.setItem(PROJECT_CACHE_KEY,JSON.stringify(remote));
+        renderProjects();
         setSiteStatus('Live data','online');
       } catch(err) { console.warn('Project config load failed; using cached/default data.',err); setSiteStatus(cached?'Offline — cached data':'Offline — default data','offline'); }
     }
