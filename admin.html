@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Manage Projects</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card-bg: #161b22;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --text-bright: #f0f6fc;
+      --brand: #3ecf8e;
+      --brand-hover: #34b27b;
+      --danger: #f85149;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 30px 20px; line-height: 1.5; }
+    .container { max-width: 950px; margin: 0 auto; }
+    
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid var(--border); }
+    h1 { color: var(--text-bright); font-size: 1.6rem; display: flex; align-items: center; gap: 10px; }
+    .view-site-btn { background: #21262d; border: 1px solid var(--border); color: var(--text-bright); padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 0.85rem; }
+    .view-site-btn:hover { border-color: var(--brand); }
+
+    .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+    .tab-btn { background: var(--card-bg); border: 1px solid var(--border); color: var(--text); padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+    .tab-btn.active { background: var(--brand); color: #000; border-color: var(--brand); }
+
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+    .card h2 { font-size: 1.15rem; color: var(--text-bright); margin-bottom: 15px; padding-bottom: 8px; border-bottom: 1px solid #21262d; }
+
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; }
+    .form-group { margin-bottom: 12px; }
+    .form-group.full { grid-column: 1 / -1; }
+    label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px; color: #8b949e; text-transform: uppercase; }
+    input, textarea, select { width: 100%; background: #0d1117; border: 70px; }
+
+    .list-item { background: #0d1117; border: 1px solid var(--radius: 6px; font-size: 0.9rem; }
+    input:focus, textarea:focus, select:focus { outline: none; border-color: var(--brand); }
+    textarea { resize: vertical; min-height: 70px; }
+
+    .list-item { background: #0d1117; border: 1px solid var(--border); padding: 12px; border-radius: 6px; margin-bottom: 10px; position: relative; }
+    .remove-btn { position: absolute; top: 10px; right: 10px; background: none; border: none; color: var(--danger); cursor: pointer; font-size: 1.1rem; }
+    .add-btn { background: #21262d; border: 1px dashed var(--border); color: var(--brand); padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; width: 100%; margin-top: 5px; }
+    .add-btn:hover { background: #30363d; }
+
+    .actions-bar { position: sticky; bottom: 20px; background: rgba(22, 27, 34, 0.95); backdrop-filter: blur(8px); border: 1px solid var(--border); padding: 15px 20px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
+    .save-btn { background: var(--brand); color: #000; border: none; font-weight: 700; padding: 12px 28px; border-radius: 6px; cursor: pointer; font-size: 1rem; }
+    .save-btn:hover { background: var(--brand-hover); }
+    .status-msg { font-size: 0.9rem; font-weight: 500; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>⚙️ Projects Admin Panel</h1>
+    <a href="index.html" class="view-site-btn" target="_blank">Open Website ↗</a>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('ecoro')">E-CORO</button>
+    <button class="tab-btn" onclick="switchTab('aimee')">AIMEE</button>
+    <button class="tab-btn" onclick="switchTab('march')">MARCH</button>
+  </div>
+
+  <form id="adminForm" onsubmit="saveData(event)">
+    <!-- Main Info -->
+    <div class="card">
+      <h2>General Information</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Project Name</label>
+          <input type="text" id="projName" required>
+        </div>
+        <div class="form-group">
+          <label>Badge / Category</label>
+          <input type="text" id="projBadge" required>
+        </div>
+        <div class="form-group">
+          <label>Progress (% Done)</label>
+          <input type="number" id="projProgress" min="0" max="100" required>
+        </div>
+        <div class="form-group">
+          <label>PAC Wallet Address</label>
+          <input type="text" id="projWallet" required>
+        </div>
+        <div class="form-group full">
+          <label>Tagline / Short Description</label>
+          <input type="text" id="projTagline" required>
+        </div>
+        <div class="form-group full">
+          <label>Cover Image URL (Unsplash or Direct Link)</label>
+          <input type="url" id="projCover" required>
+        </div>
+      </div>
+    </div>
+
+    <!-- Metrics Cards -->
+    <div class="card">
+      <h2>Summary Metrics (Panel Cards)</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Donated (e.g. "14,250 PAC")</label>
+          <input type="text" id="metricDonated" required>
+        </div>
+        <div class="form-group">
+          <label>Top Donator</label>
+          <input type="text" id="metricTopDonator" required>
+        </div>
+        <div class="form-group">
+          <label>Top Contributor</label>
+          <input type="text" id="metricTopContributor" required>
+        </div>
+        <div class="form-group">
+          <label>Started Date (e.g. "Jan 2026")</label>
+          <input type="text" id="metricStarted" required>
+        </div>
+      </div>
+    </div>
+
+    <!-- Roadmap -->
+    <div class="card">
+      <h2>Roadmap Phases</h2>
+      <div id="roadmapList"></div>
+      <button type="button" class="add-btn" onclick="addRoadmapItem()">+ Add Phase</button>
+    </div>
+
+    <!-- Needs & Tasks -->
+    <div class="card">
+      <h2>Needs, Tasks & Challenges</h2>
+      <div id="needsList"></div>
+      <button type="button" class="add-btn" onclick="addNeedItem()">+ Add Task</button>
+    </div>
+
+    <!-- Sticky Save Actions -->
+    <div class="actions-bar">
+      <span class="status-msg" id="statusMsg">All changes ready to publish.</span>
+      <button type="submit" class="save-btn" id="saveBtn">Save & Sync to Live Site</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://druoddpcdykwjtntffjc.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydW9kZHBjZHlrd2p0bnRmZmpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MjYwMjYsImV4cCI6MjA4OTAwMjAyNn0.89u2TfI0jS_XoE3gVz0c7KxY6qK_L7sQ1y5_wV_sample'; // کلید Anon شما
+  const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+  // پیش‌فرض‌های اصلی سیستم (در صورت عدم اتصال دیتابیس)
+  let projectStore = {
+    ecoro: {
+      id: 'ecoro',
+      name: 'E-CORO',
+      badge: 'Urban Mobility',
+      tagline: 'Hyper-efficient electric tandem vehicle for urban commuting.',
+      cover: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=1600&q=80',
+      progress: 65,
+      wallet: 'PAC-78F9-99E2-ECORO-DEV-DONATE',
+      metrics: { donated: '14,250 PAC', topDonator: '@crypto_vanguard', topContributor: '@alex_cad', started: 'Jan 2026' },
+      roadmap: [
+        { title: 'Chassis & suspension CFD simulation', status: 'done' },
+        { title: 'Battery pack 48V modular enclosure', status: 'done' },
+        { title: 'CAN-bus telemetry & companion app BLE', status: 'current' },
+        { title: 'Homologation crash simulation & road test', status: 'upcoming' }
+      ],
+      needs: [
+        { tag: 'Firmware / C++', urgent: true, title: 'CAN-bus BMS Telemetry Parser', desc: 'Need embedded C++ driver to parse Daly/JBD BMS over isolated CAN.' },
+        { tag: 'CAD / SolidWorks', urgent: false, title: 'Steering Column Bracket FEA', desc: 'Optimize topology for 3D printed 7075-T6 aluminum bracket.' }
+      ]
+    },
+    aimee: {
+      id: 'aimee',
+      name: 'AIMEE',
+      badge: 'Autonomous AI',
+      tagline: 'Autonomous AI agents coordinating decentralized micro-enterprises.',
+      cover: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1600&q=80',
+      progress: 35,
+      wallet: 'PAC-33A1-77BC-AIMEE-AGENT-FUND',
+      metrics: { donated: '8,400 PAC', topDonator: '@neural_whale', topContributor: '@dev_sara', started: 'Apr 2026' },
+      roadmap: [
+        { title: 'Core agent loop & memory buffer', status: 'done' },
+        { title: 'Multi-agent consensus protocol', status: 'current' },
+        { title: 'PAC micro-treasury smart router', status: 'upcoming' }
+      ],
+      needs: [
+        { tag: 'Python / LLM', urgent: true, title: 'Context Window Compression', desc: 'Implement token pruning for long-running agent threads.' }
+      ]
+    },
+    march: {
+      id: 'march',
+      name: 'MARCH',
+      badge: 'Spatial Computing',
+      tagline: 'Next-gen location-based spatial computing engine for real-world gaming.',
+      cover: 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=1600&q=80',
+      progress: 15,
+      wallet: 'PAC-991D-44FF-MARCH-WORLD-AR',
+      metrics: { donated: '3,150 PAC', topDonator: '@spatial_sam', topContributor: '@gl_master', started: 'Jun 2026' },
+      roadmap: [
+        { title: 'VPS anchor mesh sync', status: 'done' },
+        { title: 'Occlusion shader for mobile AR', status: 'current' },
+        { title: 'Multiplayer relay state compression', status: 'upcoming' }
+      ],
+      needs: [
+        { tag: 'Unity / HLSL', urgent: true, title: 'Depth-map Mesh Occlusion Shader', desc: 'Lightweight screen-space depth occlusion shader for LiDAR.' }
+      ]
+    }
+  };
+
+  let activeTab = 'ecoro';
+
+  function init() {
+    // بازگردانی از localStorage در صورت وجود
+    const cached = localStorage.getItem('projects_cache');
+    if (cached) {
+      try { projectStore = { ...projectStore, ...JSON.parse(cached) }; } catch(e) {}
+    }
+    loadProjectIntoForm(activeTab);
+    fetchFromSupabase();
+  }
+
+  async function fetchFromSupabase() {
+    if (!supabase) return;
+    try {
+      const { data, error } = await supabase.from('project_configs').select('*');
+      if (data && !error && data.length > 0) {
+        data.forEach(item => {
+          projectStore[item.id] = item;
+        });
+        localStorage.setItem('projects_cache', JSON.stringify(projectStore));
+        loadProjectIntoForm(activeTab);
+        document.getElementById('statusMsg').textContent = 'Synced with database.';
+      }
+    } catch(err) {
+      console.warn('Working in offline/cached mode:', err);
+    }
+  }
+
+  function switchTab(id) {
+    saveCurrentFormToMemory();
+    activeTab = id;
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.textContent.toLowerCase().includes(id));
+    });
+    loadProjectIntoForm(id);
+  }
+
+  function loadProjectIntoForm(id) {
+    const p = projectStore[id];
+    document.getElementById('projName').value = p.name || '';
+    document.getElementById('projBadge').value = p.badge || '';
+    document.getElementById('projProgress').value = p.progress || 0;
+    document.getElementById('projWallet').value = p.wallet || '';
+    document.getElementById('projTagline').value = p.tagline || '';
+    document.getElementById('projCover').value = p.cover || '';
+
+    document.getElementById('metricDonated').value = p.metrics?.donated || '';
+    document.getElementById('metricTopDonator').value = p.metrics?.topDonator || '';
+    document.getElementById('metricTopContributor').value = p.metrics?.topContributor || '';
+    document.getElementById('metricStarted').value = p.metrics?.started || '';
+
+    renderRoadmap(p.roadmap || []);
+    renderNeeds(p.needs || []);
+  }
+
+  function renderRoadmap(items) {
+    const container = document.getElementById('roadmapList');
+    container.innerHTML = '';
+    items.forEach((item, index) => {
+      container.innerHTML += `
+        <div class="list-item">
+          <button type="button" class="remove-btn" onclick="removeRoadmap(${index})">&times;</button>
+          <div class="form-grid">
+            <div class="form-group" style="grid-column: 1 / 3;">
+              <label>Phase Title</label>
+              <input type="text" value="${item.title}" onchange="updateRoadmap(${index}, 'title', this.value)">
+            </div>
+            <div class="form-group">
+              <label>Status</label>
+              <select onchange="updateRoadmap(${index}, 'status', this.value)">
+                <option value="done" ${item.status === 'done' ? 'selected' : ''}>Done</option>
+                <option value="current" ${item.status === 'current' ? 'selected' : ''}>In Progress</option>
+                <option value="upcoming" ${item.status === 'upcoming' ? 'selected' : ''}>Upcoming</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  function renderNeeds(items) {
+    const container = document.getElementById('needsList');
+    container.innerHTML = '';
+    items.forEach((item, index) => {
+      container.innerHTML += `
+        <div class="list-item">
+          <button type="button" class="remove-btn" onclick="removeNeed(${index})">&times;</button>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Task Title</label>
+              <input type="text" value="${item.title}" onchange="updateNeed(${index}, 'title', this.value)">
+            </div>
+            <div class="form-group">
+              <label>Skill Tag</label>
+              <input type="text" value="${item.tag}" onchange="updateNeed(${index}, 'tag', this.value)">
+            </div>
+            <div class="form-group">
+              <label>Urgent Task?</label>
+              <select onchange="updateNeed(${index}, 'urgent', this.value === 'true')">
+                <option value="false" ${!item.urgent ? 'selected' : ''}>Normal</option>
+                <option value="true" ${item.urgent ? 'selected' : ''}>🔥 Urgent</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label>Task Description</label>
+              <textarea onchange="updateNeed(${index}, 'desc', this.value)">${item.desc}</textarea>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  function saveCurrentFormToMemory() {
+    const p = projectStore[activeTab];
+    p.name = document.getElementById('projName').value;
+    p.badge = document.getElementById('projBadge').value;
+    p.progress = parseInt(document.getElementById('projProgress').value) || 0;
+    p.wallet = document.getElementById('projWallet').value;
+    p.tagline = document.getElementById('projTagline').value;
+    p.cover = document.getElementById('projCover').value;
+    p.metrics = {
+      donated: document.getElementById('metricDonated').value,
+      topDonator: document.getElementById('metricTopDonator').value,
+      topContributor: document.getElementById('metricTopContributor').value,
+      started: document.getElementById('metricStarted').value
+    };
+  }
+
+  function addRoadmapItem() {
+    projectStore[activeTab].roadmap.push({ title: 'New Phase', status: 'upcoming' });
+    renderRoadmap(projectStore[activeTab].roadmap);
+  }
+  function removeRoadmap(i) {
+    projectStore[activeTab].roadmap.splice(i, 1);
+    renderRoadmap(projectStore[activeTab].roadmap);
+  }
+  function updateRoadmap(i, key, val) { projectStore[activeTab].roadmap[i][key] = val; }
+
+  function addNeedItem() {
+    projectStore[activeTab].needs.push({ title: 'New Challenge', tag: 'General', urgent: false, desc: 'Description of the challenge' });
+    renderNeeds(projectStore[activeTab].needs);
+  }
+  function removeNeed(i) {
+    projectStore[activeTab].needs.splice(i, 1);
+    renderNeeds(projectStore[activeTab].needs);
+  }
+  function updateNeed(i, key, val) { projectStore[activeTab].needs[i][key] = val; }
+
+  async function saveData(e) {
+    e.preventDefault();
+    saveCurrentFormToMemory();
+    localStorage.setItem('projects_cache', JSON.stringify(projectStore));
+
+    const statusMsg = document.getElementById('statusMsg');
+    statusMsg.textContent = 'Saving changes...';
+
+    if (!supabase) {
+      statusMsg.textContent = 'Saved to local browser cache (Supabase offline).';
+      return;
+    }
+
+    try {
+      const payload = Object.values(projectStore).map(p => ({
+        id: p.id,
+        name: p.name,
+        badge: p.badge,
+        tagline: p.tagline,
+        cover: p.cover,
+        progress: p.progress,
+        wallet: p.wallet,
+        metrics: p.metrics,
+        roadmap: p.roadmap,
+        needs: p.needs,
+        updated_at: new Date().toISOString()
+      }));
+
+      const { error } = await supabase.from('project_configs').upsert(payload);
+      if (error) throw error;
+
+      statusMsg.textContent = '✅ All changes published to website successfully!';
+      setTimeout(() => { statusMsg.textContent = 'Ready'; }, 4000);
+    } catch(err) {
+      console.error(err);
+      statusMsg.textContent = '⚠️ Saved locally, but Supabase sync failed: ' + err.message;
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
