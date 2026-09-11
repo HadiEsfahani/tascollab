@@ -1549,6 +1549,81 @@
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && dashState) closeDashboard();
     });
+    // ==========================================
+// FAIL-SAFE LIVE SYNC WITH SUPABASE / CACHE
+// ==========================================
+async function syncProjectData() {
+  // 1. بررسی کش محلی جهت اعمال فوری سریع‌ترین آپدیت
+  const cached = localStorage.getItem('projects_cache');
+  if (cached) {
+    try {
+      const parsed = JSON.parse(cached);
+      applyUpdatedDataToUI(parsed);
+    } catch(e) {}
+  }
+
+  // 2. همگام‌سازی از سرور در پس‌زمینه بدون مسدودسازی لود سایت
+  if (typeof supabase !== 'undefined' && supabase) {
+    try {
+      const { data, error } = await supabase.from('project_configs').select('*');
+      if (data && !error && data.length > 0) {
+        const remoteStore = {};
+        data.forEach(item => { remoteStore[item.id] = item; });
+        localStorage.setItem('projects_cache', JSON.stringify(remoteStore));
+        applyUpdatedDataToUI(remoteStore);
+      }
+    } catch (err) {
+      console.info('Supabase unreachable. Displaying fallback default UI content seamlessly.');
+    }
+  }
+}
+
+function applyUpdatedDataToUI(store) {
+  Object.keys(store).forEach(id => {
+    const data = store[id];
+    if (!data) return;
+
+    // آپدیت آبجکت داشبورد
+    if (window.dashboardData && window.dashboardData[id]) {
+      if (data.name) window.dashboardData[id].name = data.name;
+      if (data.badge) window.dashboardData[id].badge = data.badge;
+      if (data.tagline) window.dashboardData[id].tagline = data.tagline;
+      if (data.cover) window.dashboardData[id].cover = data.cover;
+      if (data.roadmap) window.dashboardData[id].roadmap = data.roadmap;
+      if (data.needs) window.dashboardData[id].needs = data.needs;
+    }
+
+    // آپدیت پنل‌های صفحه اصلی
+    const panel = document.querySelector(`.panel[data-project="${id}"], .panel:nth-child(${id === 'ecoro' ? 1 : id === 'aimee' ? 2 : 3})`);
+    if (panel) {
+      if (data.progress !== undefined) {
+        panel.setAttribute('data-progress', data.progress);
+        const bar = panel.querySelector('.progress-fill');
+        if (bar) bar.style.height = data.progress + '%';
+        const num = panel.querySelector('.progress-num');
+        if (num) num.textContent = data.progress + '% DONE';
+      }
+      if (data.metrics) {
+        const valEls = panel.querySelectorAll('.metric-val');
+        if (valEls.length >= 4) {
+          if (data.metrics.donated) valEls[0].textContent = data.metrics.donated;
+          if (data.metrics.topDonator) valEls[1].textContent = data.metrics.topDonator;
+          if (data.metrics.topContributor) valEls[2].textContent = data.metrics.topContributor;
+          if (data.metrics.started) valEls[3].textContent = data.metrics.started;
+        }
+      }
+      if (data.wallet) {
+        const walletText = panel.querySelector('.wallet-address-bar span');
+        if (walletText) walletText.textContent = data.wallet;
+      }
+    }
+  });
+}
+
+// فراخوانی خودکار پس از لود کامل صفحه
+window.addEventListener('DOMContentLoaded', syncProjectData);
+
   </script>
+  
 </body>
 </html>
