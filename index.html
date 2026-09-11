@@ -90,8 +90,12 @@
     }
 
     @media (min-width: 992px) {
-      .project-row {
-        height: 589px;
+      .project-row { height: 589px; }
+      .project-row:not(:has(.panel:nth-child(3))) .panel {
+        flex: 0 0 calc((100% - 2rem) / 3);
+      }
+      .project-row:not(:has(.panel:nth-child(3))) .panel.active {
+        flex: 1 1 auto;
       }
     }
 
@@ -1119,11 +1123,13 @@
         const rowEntries=entries.slice(i,i+3);
         rows.push(`<div class="project-row">${rowEntries.map(([key,data],rowIndex)=>{
           const globalIndex=i+rowIndex;
+          const isIncompleteRow=rowEntries.length<3;
+          const isInitiallyActive=!isIncompleteRow && globalIndex===0;
           const progress=(data.stats.find(s=>s.label.toLowerCase()==='progress')||{}).value||'0%';
           const progressNum=Math.max(0,Math.min(100,parseFloat(progress)||0));
           const feed=(data.contributions||[]).map(c=>`<div class="contribution-item"><div class="contribution-meta"><strong>${escapeHTML(c.nickname)}</strong><span style="color:var(--brand-green);">Reward: ${escapeHTML(c.reward||'—')}</span></div><div>"${escapeHTML(c.message)}"</div><div class="admin-reply">↳ <strong>Admin:</strong> ${escapeHTML(c.reply||'')}</div></div>`).join('');
           const stats=(data.stats||[]).map(s=>`<div class="metric-card"><span class="metric-label">${escapeHTML(s.label)}</span><span class="metric-value">${escapeHTML(s.value)}</span></div>`).join('');
-          return `<div class="panel ${globalIndex===0?'active':''}" data-progress="${progressNum}"><div class="progress-track"><div class="progress-fill" style="height:${progressNum}%;"></div></div><div class="panel-bg" style="background-image:url('${escapeHTML(data.cover)}');"></div><div class="panel-content"><div class="panel-header"><div class="project-logo-badge">${escapeHTML(data.badge)}</div><div><h2 class="project-title">${escapeHTML(data.name)}</h2></div><span class="collapsed-indicator">${progressNum}% DONE</span></div><div class="details-view"><p class="description">${escapeHTML(data.description)}</p><div class="metrics-grid">${stats}<div class="metric-card"><span class="metric-label">Top Donator</span><span class="metric-value">${escapeHTML(data.topDonator)}</span></div><div class="metric-card"><span class="metric-label">Top Contributor</span><span class="metric-value">${escapeHTML(data.topContributor)}</span></div></div><div class="actions-section"><div class="action-box"><h4>Donate via PAC</h4><div class="wallet-bar"><span class="wallet-address" id="wallet-${key}">${escapeHTML(data.wallet)}</span><button class="copy-btn" onclick="copyWallet('wallet-${key}',this)">Copy</button></div></div><div class="action-box"><h4>🛠️ Collaborate & Earn Bounties</h4><button class="btn-contribute" onclick="openModal('${escapeHTML(data.name)}')">Submit Contribution / Idea</button></div></div><div><span class="metric-label" style="display:block;margin-bottom:4px;">Recent Community Contributions & Bounties</span><div class="contributions-feed">${feed||'<div class="contribution-item">No contributions yet.</div>'}</div></div><div class="dashboard-link-container"><a href="#" class="dashboard-link" onclick="openDashboard('${key}',this,event)">Project Dashboard & Telemetry &rarr;</a></div></div></div></div>`;
+          return `<div class="panel ${isInitiallyActive?'active':''}" data-progress="${progressNum}"><div class="progress-track"><div class="progress-fill" style="height:${progressNum}%;"></div></div><div class="panel-bg" style="background-image:url('${escapeHTML(data.cover)}');"></div><div class="panel-content"><div class="panel-header"><div class="project-logo-badge">${escapeHTML(data.badge)}</div><div><h2 class="project-title">${escapeHTML(data.name)}</h2></div><span class="collapsed-indicator">${progressNum}% DONE</span></div><div class="details-view"><p class="description">${escapeHTML(data.description)}</p><div class="metrics-grid">${stats}<div class="metric-card"><span class="metric-label">Top Donator</span><span class="metric-value">${escapeHTML(data.topDonator)}</span></div><div class="metric-card"><span class="metric-label">Top Contributor</span><span class="metric-value">${escapeHTML(data.topContributor)}</span></div></div><div class="actions-section"><div class="action-box"><h4>Donate via PAC</h4><div class="wallet-bar"><span class="wallet-address" id="wallet-${key}">${escapeHTML(data.wallet)}</span><button class="copy-btn" onclick="copyWallet('wallet-${key}',this)">Copy</button></div></div><div class="action-box"><h4>🛠️ Collaborate & Earn Bounties</h4><button class="btn-contribute" onclick="openModal('${escapeHTML(data.name)}')">Submit Contribution / Idea</button></div></div><div><span class="metric-label" style="display:block;margin-bottom:4px;">Recent Community Contributions & Bounties</span><div class="contributions-feed">${feed||'<div class="contribution-item">No contributions yet.</div>'}</div></div><div class="dashboard-link-container"><a href="#" class="dashboard-link" onclick="openDashboard('${key}',this,event)">Project Dashboard & Telemetry &rarr;</a></div></div></div></div>`;
         }).join('')}</div>`);
       }
       root.innerHTML=rows.join('');
