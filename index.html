@@ -1148,9 +1148,16 @@
       renderProjects();
       if(!isSupabaseConfigured){ setSiteStatus(cached?'Offline — cached data':'Offline — default data','offline'); return; }
       try {
-        const {data,error}=await supabaseClient.from('project_configs').select('project_key,data');
+        const {data,error}=await supabaseClient.from('project_configs').select('project_key,data,sort_order');
         if(error) throw error;
-        const remote={}; data.forEach(r=>remote[r.project_key]=r.data);
+        // sort_order is the single source of truth for the public site's
+        // visual order: left-to-right, then the next row of three.
+        const orderedRows=[...(data||[])].sort((a,b)=>{
+          const ao=Number.isFinite(Number(a.sort_order))?Number(a.sort_order):Number.MAX_SAFE_INTEGER;
+          const bo=Number.isFinite(Number(b.sort_order))?Number(b.sort_order):Number.MAX_SAFE_INTEGER;
+          return ao-bo || String(a.project_key).localeCompare(String(b.project_key));
+        });
+        const remote={}; orderedRows.forEach(r=>remote[r.project_key]=r.data);
         // A successful Supabase response is authoritative, including an
         // empty result. This makes project deletion permanent.
         dashboardData=remote;
