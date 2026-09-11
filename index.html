@@ -4,13 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Projects Showcase | Open Innovation</title>
-  
+  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src * 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src *; style-src * 'unsafe-inline';">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <!-- Supabase client (used to store contribution/collaboration submissions) -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
@@ -1179,17 +1180,18 @@
     // 3. Paste your Project URL and anon/public API key below
     //    (Project Settings -> API in the Supabase dashboard).
     // ------------------------------------------------------------
-    const SUPABASE_URL = 'https://druoddpcdykwjtntffjc.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRydW9kZHBjZHlrd2p0bnRmZmpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkwNjQ1MTUsImV4cCI6MjEwNDY0MDUxNX0.xld1REqeSGSh0n9vc_pQM_rOPMS7ycZ216fx5fbW_Jc';
+const supabaseUrl = 'https://druoddpcdykwjtntffjc.supabase.co';
+const supabaseKey = 'eyJhbGci...'; // کلید شما
+let supabaseClient = null;
 
-    const isSupabaseConfigured = !SUPABASE_URL.includes('YOUR_') && !SUPABASE_ANON_KEY.includes('YOUR_');
-    const supabaseClient = isSupabaseConfigured
-      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-      : null;
+try {
+  if (typeof supabase !== 'undefined') {
+    supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+  }
+} catch (e) {
+  console.warn("Supabase failed to load, continuing with static data.", e);
+}
 
-    if (!isSupabaseConfigured) {
-      console.warn('Supabase is not configured yet — set SUPABASE_URL and SUPABASE_ANON_KEY at the top of the script to enable saving submissions.');
-    }
 
     // Accordion interaction
     const panels = document.querySelectorAll('.panel');
