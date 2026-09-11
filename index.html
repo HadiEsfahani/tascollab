@@ -1457,16 +1457,23 @@ const dashboardData = customData || {
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && dashState) closeDashboard();
     });
-        // --- بارگذاری داینامیک محتوا از دیتابیس Supabase ---
+
+    // --- بارگذاری داینامیک محتوا از Supabase به صورت ایمن ---
     async function fetchLiveContent() {
-      if (!supabaseClient) return;
       try {
-        const { data, error } = await supabaseClient.from('site_config').select('data').eq('id', 'main_content').single();
+        if (typeof supabaseClient === 'undefined' || !supabaseClient) return;
+
+        const { data, error } = await supabaseClient
+          .from('site_config')
+          .select('data')
+          .eq('id', 'main_content')
+          .maybeSingle();
+
         if (error || !data || !data.data) return;
 
         const config = data.data;
 
-        // ۱. بروزرسانی عنوان تب و متون هدر
+        // ۱. عنوان صفحه و هدرها
         if (config.title) document.title = config.title;
         const mainH1 = document.querySelector('header h1');
         if (mainH1 && config.headerTitle) mainH1.textContent = config.headerTitle;
@@ -1474,20 +1481,20 @@ const dashboardData = customData || {
         if (mainSub && config.headerSubtitle) mainSub.textContent = config.headerSubtitle;
 
         // ۲. بروزرسانی اطلاعات تکمیلی پروژه‌ها (Tasks, Roadmap, Timeline)
-        if (config.projects && Array.isArray(config.projects)) {
+        if (config.projects && Array.isArray(config.projects) && typeof dashboardData !== 'undefined') {
           config.projects.forEach(p => {
-            if (p.id && p.dashboardData && typeof dashboardData !== 'undefined') {
+            if (p.id && p.dashboardData) {
               dashboardData[p.id] = p.dashboardData;
             }
           });
         }
       } catch (err) {
-        console.warn("Using embedded fallback data:", err);
+        console.warn("Using fallback static data:", err);
       }
     }
 
-    document.addEventListener('DOMContentLoaded', fetchLiveContent);
-
+    // فراخوانی مستقیم و ایمن
+    fetchLiveContent();
   </script>
 </body>
 </html>
