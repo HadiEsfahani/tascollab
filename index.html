@@ -1622,6 +1622,125 @@ function applyUpdatedDataToUI(store) {
 
 // فراخوانی خودکار پس از لود کامل صفحه
 window.addEventListener('DOMContentLoaded', syncProjectData);
+// =========================================================================
+// SEAMLESS DYNAMIC SYNC ENGINE (Reads Admin & Database updates smoothly)
+// =========================================================================
+async function syncWebsiteContent() {
+  // 1. اول از کش محلی سریعاً آپدیت‌ها را می‌خواند
+  const cached = localStorage.getItem('projects_cache');
+  if (cached) {
+try {
+const parsed = JSON.parse(cached);
+applyStoreToDOM(parsed);
+} catch(e) {}
+  }
+
+  // 2. در صورت آنلاین بودن Supabase، آخرین نسخه دیتابیس را لود می‌کند
+  if (typeof supabase !== 'undefined' && supabase) {
+try {
+const { data, error } = await supabase.from('project_configs').select('*');
+if (data && !error && data.length > 0) {
+const remoteStore = {};
+data.forEach(item => { remoteStore[item.id] = item; });
+localStorage.setItem('projects_cache', JSON.stringify(remoteStore));
+applyStoreToDOM(remoteStore);
+}
+} catch (err) {
+console.info('Supabase offline or table empty. Running safely on hardcoded default DOM.');
+}
+  }
+}
+
+function applyStoreToDOM(store) {
+  Object.keys(store).forEach(id => {
+const p = store[id];
+if (!p) return;
+
+// ۱. آپدیت آبجکت داشبورد (Roadmap, Needs, Timeline, Cover, Stats)
+if (window.dashboardData && window.dashboardData[id]) {
+if (p.name) window.dashboardData[id].name = p.name;
+if (p.badge) window.dashboardData[id].badge = p.badge;
+if (p.tagline) window.dashboardData[id].tagline = p.tagline;
+if (p.cover) window.dashboardData[id].cover = p.cover;
+if (p.roadmap) window.dashboardData[id].roadmap = p.roadmap;
+if (p.needs) window.dashboardData[id].needs = p.needs;
+if (p.timeline) window.dashboardData[id].timeline = p.timeline;
+if (p.stats) {
+window.dashboardData[id].stats = [
+{ label: 'Progress', value: (p.progress || 0) + '%' },
+{ label: 'Donated', value: p.stats.donated || '0 PAC' },
+{ label: 'Started', value: p.stats.started || '2026' },
+{ label: 'Contributors', value: p.stats.contributorsCount || 0 }
+];
+}
+}
+
+// ۲. آپدیت پنل‌های صفحه اصلی (Accordion Panels)
+const panelIndex = id === 'ecoro' ? 0 : id === 'aimee' ? 1 : 2;
+const panels = document.querySelectorAll('.panel');
+const panel = panels[panelIndex];
+if (panel) {
+if (p.progress !== undefined) {
+panel.setAttribute('data-progress', p.progress);
+const bar = panel.querySelector('.progress-fill');
+if (bar) bar.style.height = p.progress + '%';
+const num = panel.querySelector('.progress-num');
+if (num) num.textContent = p.progress + '% DONE';
+}
+if (p.name) {
+const titleEl = panel.querySelector('.project-title');
+if (titleEl) titleEl.textContent = p.name;
+}
+if (p.tagline) {
+const descEl = panel.querySelector('.project-desc');
+if (descEl) descEl.textContent = p.tagline;
+}
+if (p.cover) {
+panel.style.backgroundImage = `linear-gradient(rgba(10, 14, 20, 0.75), rgba(10, 14, 20, 0.92)), url('${p.cover}')`;
+}
+if (p.wallet) {
+const walletText = panel.querySelector('.wallet-address-bar span');
+if (walletText) walletText.textContent = p.wallet;
+}
+if (p.stats) {
+const valEls = panel.querySelectorAll('.metric-val');
+if (valEls.length >= 5) {
+if (p.stats.donated) valEls[0].textContent = p.stats.donated;
+if (p.progress !== undefined) valEls[1].textContent = p.progress + '%';
+if (p.stats.topDonator) valEls[2].textContent = p.stats.topDonator;
+if (p.stats.topContributor) valEls[3].textContent = p.stats.topContributor;
+if (p.stats.started) valEls[4].textContent = p.stats.started;
+}
+}
+if (p.contributions && p.contributions.length > 0) {
+const feedContainer = panel.querySelector('.contributions-feed');
+if (feedContainer) {
+const feedHeader = feedContainer.querySelector('.feed-header');
+let newFeedHTML = feedHeader ? feedHeader.outerHTML : '';
+p.contributions.forEach(c => {
+newFeedHTML += `
+<div class="contribution-item">
+<div class="contrib-top">
+<span class="contrib-author">${c.nickname}</span>
+<span class="contrib-reward">Reward: ${c.reward}</span>
+</div>
+<div class="contrib-msg">"${c.message}"</div>
+<div class="contrib-reply">
+<div class="reply-badge">Verified &amp; Awarded</div>
+<div>${c.adminReply}</div>
+</div>
+</div>
+`;
+});
+feedContainer.innerHTML = newFeedHTML;
+}
+}
+}
+  });
+}
+
+window.addEventListener('DOMContentLoaded', syncWebsiteContent);
+
 
   </script>
   
