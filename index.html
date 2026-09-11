@@ -74,16 +74,22 @@
 
     /* Accordion Container */
     .accordion {
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 1rem;
       width: 100%;
+      align-items: start;
     }
 
-    @media (min-width: 992px) {
+    @media (max-width: 991px) {
       .accordion {
-        flex-direction: row;
-        height: 589px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .accordion {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -102,16 +108,10 @@
                   border-color 0.3s ease;
     }
 
-    @media (min-width: 992px) {
-      .panel {
-        flex: 1;
-      }
-      .panel.active {
-        flex: 4.5;
-        cursor: default;
-        border-color: rgba(62, 207, 142, 0.5);
-        box-shadow: 0 12px 30px rgba(0,0,0,0.5);
-      }
+    .panel.active {
+      cursor: default;
+      border-color: rgba(62, 207, 142, 0.5);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.5);
     }
 
     /* Vertical Progress Bar on very left edge */
