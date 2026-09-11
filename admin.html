@@ -5,7 +5,7 @@
 <title>Project Admin | Open Innovation</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--bg:#0f0f11;--card:#16161a;--border:#292932;--text:#f3f4f6;--muted:#9ca3af;--green:#3ecf8e;--danger:#f05a5a;--mono:'JetBrains Mono',monospace}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;padding:28px}.wrap{max-width:1180px;margin:auto}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;gap:16px}.top h1{margin:0;font-size:1.7rem}.top p{color:var(--muted);margin:.35rem 0 0}.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}.login{max-width:460px;margin:8vh auto}.hidden{display:none!important}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}input,textarea,select{width:100%;background:#0d0d10;color:#fff;border:1px solid var(--border);border-radius:8px;padding:10px;font:inherit}textarea{min-height:90px;resize:vertical}input:focus,textarea:focus,select:focus{outline:none;border-color:var(--green)}button{border:0;border-radius:8px;padding:9px 13px;font-weight:700;cursor:pointer}.primary{background:var(--green);color:#06140d}.secondary{background:#24242d;color:#fff;border:1px solid var(--border)}.danger{background:transparent;color:var(--danger);border:1px solid rgba(240,90,90,.35)}.row{display:grid;grid-template-columns:1.1fr 1fr auto;gap:8px;align-items:end;margin-bottom:8px}.row.needs{grid-template-columns:.8fr 1.2fr 2fr auto}.row.timeline{grid-template-columns:.7fr .8fr 3fr auto}.row.contrib{grid-template-columns:.8fr .8fr 2fr 2fr auto}.section-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.section-title h2{font-size:1rem;margin:0}.muted{color:var(--muted);font-size:.78rem}.actions{display:flex;gap:8px;flex-wrap:wrap}.top .actions{justify-content:flex-end}.project-tabs{overflow-x:auto;padding-bottom:4px}.project-tabs button{white-space:nowrap}.status{position:fixed;right:18px;bottom:18px;background:#19191f;border:1px solid var(--border);padding:10px 13px;border-radius:9px;color:var(--muted);font-family:var(--mono);font-size:.7rem;z-index:5}.status.ok{color:var(--green)}.status.err{color:var(--danger)}.notice{padding:12px;border-radius:8px;background:rgba(224,162,62,.08);border:1px solid rgba(224,162,62,.25);color:#e0a23e;font-size:.8rem;margin-bottom:12px}.check{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:.8rem}.check input{width:auto}.project-tabs{display:flex;gap:8px;margin-bottom:14px}.project-tabs button.active{background:var(--green);color:#06140d}@media(max-width:760px){body{padding:14px}.grid,.row,.row.needs,.row.timeline,.row.contrib{grid-template-columns:1fr}.row button{justify-self:start}}
+:root{--bg:#0f0f11;--card:#16161a;--border:#292932;--text:#f3f4f6;--muted:#9ca3af;--green:#3ecf8e;--danger:#f05a5a;--mono:'JetBrains Mono',monospace}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;padding:28px}.wrap{max-width:1180px;margin:auto}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;gap:16px}.top h1{margin:0;font-size:1.7rem}.top p{color:var(--muted);margin:.35rem 0 0}.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}.login{max-width:460px;margin:8vh auto}.hidden{display:none!important}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}input,textarea,select{width:100%;background:#0d0d10;color:#fff;border:1px solid var(--border);border-radius:8px;padding:10px;font:inherit}textarea{min-height:90px;resize:vertical}input:focus,textarea:focus,select:focus{outline:none;border-color:var(--green)}button{border:0;border-radius:8px;padding:9px 13px;font-weight:700;cursor:pointer}.primary{background:var(--green);color:#06140d}.secondary{background:#24242d;color:#fff;border:1px solid var(--border)}.danger{background:transparent;color:var(--danger);border:1px solid rgba(240,90,90,.35)}.row{display:grid;grid-template-columns:1.1fr 1fr auto;gap:8px;align-items:end;margin-bottom:8px}.row.needs{grid-template-columns:.8fr 1.2fr 2fr auto}.row.timeline{grid-template-columns:.7fr .8fr 3fr auto}.row.contrib{grid-template-columns:.8fr .8fr 2fr 2fr auto}.section-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.section-title h2{font-size:1rem;margin:0}.muted{color:var(--muted);font-size:.78rem}.actions{display:flex;gap:8px;flex-wrap:wrap}.status{position:fixed;right:18px;bottom:18px;background:#19191f;border:1px solid var(--border);padding:10px 13px;border-radius:9px;color:var(--muted);font-family:var(--mono);font-size:.7rem;z-index:5}.status.ok{color:var(--green)}.status.err{color:var(--danger)}.notice{padding:12px;border-radius:8px;background:rgba(224,162,62,.08);border:1px solid rgba(224,162,62,.25);color:#e0a23e;font-size:.8rem;margin-bottom:12px}.check{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:.8rem}.check input{width:auto}.project-tabs{display:flex;gap:8px;margin-bottom:14px}.project-tabs button.active{background:var(--green);color:#06140d}@media(max-width:760px){body{padding:14px}.grid,.row,.row.needs,.row.timeline,.row.contrib{grid-template-columns:1fr}.row button{justify-self:start}}
 </style></head>
 <body>
 <div class="wrap">
@@ -18,9 +18,9 @@
   </div>
 
   <div id="app" class="hidden">
-    <div class="top"><div><h1>Project Admin</h1><p>Edit every public project field, save to Supabase, or export a new index.html.</p></div><div class="actions"><button class="secondary" onclick="location.href='index.html'">View site</button><button class="secondary" onclick="logout()">Sign out</button></div></div>
-    <div class="notice">The public site always contains embedded defaults. If Supabase is unavailable, it uses the last successful local cache; if there is no cache, it uses the embedded defaults. Publishing an exported <b>index.html</b> makes the latest values part of the static file itself.</div>
-    <div class="card"><div class="section-title"><h2>Project</h2><span class="muted">Choose a project to edit</span></div><div id="tabs" class="project-tabs"></div></div>
+    <div class="top"><div><h1>Project Admin</h1><p>Edit, add, or remove public projects and save them to Supabase, or export a new index.html.</p></div><div class="actions"><button class="secondary" onclick="location.href='index.html'">View site</button><button class="secondary" onclick="logout()">Sign out</button></div></div>
+    <div class="notice">The public site uses the Supabase project list when available. If Supabase is unavailable, it uses the last successful local cache; if there is no cache, it uses the embedded defaults. Publishing an exported <b>index.html</b> makes the latest values part of the static file itself.</div>
+    <div class="card"><div class="section-title"><h2>Projects</h2><div class="actions"><button class="primary" onclick="addProject()">+ Add project</button><button class="danger" onclick="removeProject()">Remove current project</button></div></div><div class="muted" style="margin-bottom:10px">Projects are shown on the public site three per row.</div><div id="tabs" class="project-tabs"></div></div>
     <div id="editor"></div>
     <div class="card"><div class="actions"><button class="primary" onclick="saveProject()">Save project to Supabase</button><button class="secondary" onclick="saveAll()">Save all projects</button><button class="secondary" onclick="exportIndex()">Download updated index.html</button></div><p class="muted" style="margin-bottom:0">Saving to Supabase changes the live site. Exporting creates a static copy you can upload over index.html.</p></div>
   </div>
@@ -40,8 +40,47 @@ const clone=o=>JSON.parse(JSON.stringify(o));
 function status(t,c=''){let e=document.getElementById('status');e.textContent=t;e.className='status '+c}
 async function login(){const {error}=await sb.auth.signInWithPassword({email:email.value.trim(),password:password.value});if(error){loginError.textContent=error.message;return}start()}
 async function logout(){await sb.auth.signOut();location.reload()}
-async function start(){loginCard.classList.add('hidden');app.classList.remove('hidden');data=clone(DEFAULTS);try{const c=JSON.parse(localStorage.getItem(CACHE)||'{}');data=Object.assign(data,c)}catch(e){};const {data:rows,error}=await sb.from('project_configs').select('project_key,data');if(!error&&rows){rows.forEach(r=>data[r.project_key]=r.data);localStorage.setItem(CACHE,JSON.stringify(data))}renderTabs();renderEditor();fetch('index.html',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(t=>{indexSource=t;const marker='const DEFAULT_PROJECT_DATA = ';const a=t.indexOf(marker);const b=t.indexOf('\n\n    let dashboardData',a);if(a>=0&&b>0){try{const expr=t.slice(a+marker.length,b).trim().replace(/;$/,'');const fromIndex=Function('return ('+expr+')')();data=Object.assign(data,fromIndex);localStorage.setItem(CACHE,JSON.stringify(data));renderTabs();renderEditor()}catch(e){console.warn('Could not parse index defaults',e)}}}).catch(()=>{});status(error?'Using local/default data':'Connected','ok')}
+async function start(){loginCard.classList.add('hidden');app.classList.remove('hidden');data=clone(DEFAULTS);try{const c=JSON.parse(localStorage.getItem(CACHE)||'null');if(c&&typeof c==='object')data=c}catch(e){};const {data:rows,error}=await sb.from('project_configs').select('project_key,data');if(!error&&rows){data={};rows.forEach(r=>data[r.project_key]=r.data);localStorage.setItem(CACHE,JSON.stringify(data))}renderTabs();renderEditor();fetch('index.html',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(t=>{indexSource=t;const marker='const DEFAULT_PROJECT_DATA = ';const a=t.indexOf(marker);const b=t.indexOf('\n\n    let dashboardData',a);if(a>=0&&b>0){try{const expr=t.slice(a+marker.length,b).trim().replace(/;$/,'');const fromIndex=Function('return ('+expr+')')();data=Object.assign(data,fromIndex);localStorage.setItem(CACHE,JSON.stringify(data));renderTabs();renderEditor()}catch(e){console.warn('Could not parse index defaults',e)}}}).catch(()=>{});status(error?'Using local/default data':'Connected','ok')}
 function renderTabs(){tabs.innerHTML=Object.keys(data).map(k=>`<button class="secondary ${k===current?'active':''}" onclick="current='${k}';renderTabs();renderEditor()">${data[k].name||k}</button>`).join('')}
+function makeProjectKey(name){
+  const baseKey=String(name||'project').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'project';
+  let key=baseKey,i=2;
+  while(data[key]) key=baseKey+'-'+i++;
+  return key;
+}
+function blankProject(name){
+  return {name:name||'New Project',badge:'NP',tagline:'',description:'',cover:'',wallet:'',topDonator:'—',topContributor:'—',
+    stats:[{label:'Progress',value:'0%'},{label:'Donated',value:'0 PAC'},{label:'Started',value:''},{label:'Contributors',value:'0'}],
+    roadmap:[],needs:[],timeline:[],contributions:[]};
+}
+function addProject(){
+  collect();
+  const name=prompt('Project name:','New Project');
+  if(!name||!name.trim())return;
+  const key=makeProjectKey(name);
+  data[key]=blankProject(name.trim());
+  current=key;
+  renderTabs();
+  renderEditor();
+  status('New project added — save to publish','ok');
+}
+async function removeProject(){
+  collect();
+  const keys=Object.keys(data);
+  if(!data[current])return;
+  if(!confirm(`Remove "${data[current].name||current}"? This will also remove it from the live Supabase project list.`))return;
+  const key=current;
+  const {error}=await sb.from('project_configs').delete().eq('project_key',key);
+  if(error){status(error.message,'err');return}
+  delete data[key];
+  const remaining=Object.keys(data);
+  current=remaining[0]||'';
+  localStorage.setItem(CACHE,JSON.stringify(data));
+  renderTabs();
+  if(current)renderEditor();else editor.innerHTML='<div class="card"><p class="muted">No projects yet. Click “Add project” to create one.</p></div>';
+  status('Project removed','ok');
+}
+
 function input(label,value,cls='',type='text'){return `<div class="field ${cls}"><label>${label}</label><input type="${type}" value="${esc(value)}"></div>`}
 function esc(v){return String(v??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function renderEditor(){const d=data[current];editor.innerHTML=`<div class="card"><div class="section-title"><h2>Basic project information</h2></div><div class="grid"><div class="field"><label>Name</label><input id="f_name" value="${esc(d.name)}"></div><div class="field"><label>Badge</label><input id="f_badge" value="${esc(d.badge)}"></div><div class="field full"><label>Tagline</label><input id="f_tagline" value="${esc(d.tagline)}"></div><div class="field full"><label>Description</label><textarea id="f_description">${esc(d.description)}</textarea></div><div class="field full"><label>Cover image URL</label><input id="f_cover" value="${esc(d.cover)}"></div><div class="field"><label>PAC donation wallet</label><input id="f_wallet" value="${esc(d.wallet)}"></div><div class="field"><label>Top donator</label><input id="f_topDonator" value="${esc(d.topDonator)}"></div><div class="field"><label>Top contributor</label><input id="f_topContributor" value="${esc(d.topContributor)}"></div></div></div>
@@ -52,13 +91,25 @@ ${arraySection('Timeline','timeline',['Date','Type','Event text'],['date','type'
 ${arraySection('Community contributions','contributions',['Nickname','Reward','Message','Admin reply'],['nickname','reward','message','reply'],'contrib')}`}
 function arraySection(title,key,labels,fields,cls='',check=false){const rows=(data[current][key]||[]).map((r,i)=>`<div class="row ${cls}" data-key="${key}">${fields.map((f,j)=>`<div class="field"><label>${labels[j]}</label><input data-field="${f}" value="${esc(r[f])}"></div>`).join('')}${check?`<label class="check"><input type="checkbox" data-field="urgent" ${r.urgent?'checked':''}>Urgent</label>`:''}<button class="danger" onclick="this.parentElement.remove()">Remove</button></div>`).join('');return `<div class="card"><div class="section-title"><h2>${title}</h2><button class="secondary" onclick="addRow('${key}','${cls}')">+ Add</button></div><div id="rows_${key}">${rows}</div></div>`}
 function addRow(key,cls){const labels={stats:['label','value'],roadmap:['title','status'],needs:['tag','title','desc'],timeline:['date','type','text'],contributions:['nickname','reward','message','reply']}[key];const row=document.createElement('div');row.className='row '+cls;row.dataset.key=key;row.innerHTML=labels.map(f=>`<div class="field"><label>${f}</label><input data-field="${f}"></div>`).join('')+(key==='needs'?'<label class="check"><input type="checkbox" data-field="urgent">Urgent</label>':'')+'<button class="danger" onclick="this.parentElement.remove()">Remove</button>';document.getElementById('rows_'+key).appendChild(row)}
-function collect(){const d=data[current];d.name=document.getElementById('f_name').value;d.badge=document.getElementById('f_badge').value;d.tagline=document.getElementById('f_tagline').value;d.description=document.getElementById('f_description').value;d.cover=document.getElementById('f_cover').value;d.wallet=document.getElementById('f_wallet').value;d.topDonator=document.getElementById('f_topDonator').value;d.topContributor=document.getElementById('f_topContributor').value;['stats','roadmap','needs','timeline','contributions'].forEach(k=>{d[k]=[...document.querySelectorAll(`#rows_${k} .row`)].map(row=>{const o={};row.querySelectorAll('[data-field]').forEach(x=>o[x.dataset.field]=x.type==='checkbox'?x.checked:x.value);return o}).filter(o=>Object.values(o).some(v=>v!==''&&v!==false))});return d}
-function makeProjectKey(name){return String(name||'project').trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40)||'project'}
-function newProjectTemplate(name,key){return {name:name,badge:name.slice(0,2).toUpperCase(),tagline:'',description:'',cover:'',wallet:'',topDonator:'',topContributor:'',stats:[{label:'Progress',value:'0%'}],roadmap:[],needs:[],timeline:[],contributions:[]}}
-function addProject(){collect();let name=prompt('New project name:');if(!name||!name.trim())return;name=name.trim();let key=makeProjectKey(name),base=key,n=2;while(data[key])key=base+'-'+n++;data[key]=newProjectTemplate(name,key);current=key;renderTabs();renderEditor();status('New project created — save it to Supabase','ok')}
-async function removeProject(){if(Object.keys(data).length<=1){status('At least one project must remain','err');return}collect();const d=data[current];if(!confirm(`Remove project "${d.name}"? This will also remove its saved Supabase configuration.`))return;const {error}=await sb.from('project_configs').delete().eq('project_key',current);if(error){status(error.message,'err');return}delete data[current];current=Object.keys(data)[0];localStorage.setItem(CACHE,JSON.stringify(data));renderTabs();renderEditor();status('Project removed','ok')}
+function collect(){const d=data[current];d.name=f_name.value;d.badge=f_badge.value;d.tagline=f_tagline.value;d.description=f_description.value;d.cover=f_cover.value;d.wallet=f_wallet.value;d.topDonator=f_topDonator.value;d.topContributor=f_topContributor.value;['stats','roadmap','needs','timeline','contributions'].forEach(k=>{d[k]=[...document.querySelectorAll(`#rows_${k} .row`)].map(row=>{const o={};row.querySelectorAll('[data-field]').forEach(x=>o[x.dataset.field]=x.type==='checkbox'?x.checked:x.value);return o}).filter(o=>Object.values(o).some(v=>v!==''&&v!==false))});return d}
 async function saveProject(){collect();const {error}=await sb.from('project_configs').upsert({project_key:current,data:data[current],updated_at:new Date().toISOString()},{onConflict:'project_key'});if(error){status(error.message,'err');return}localStorage.setItem(CACHE,JSON.stringify(data));status('Project saved','ok')}
-async function saveAll(){collect();for(const k of Object.keys(data)){const {error}=await sb.from('project_configs').upsert({project_key:k,data:data[k],updated_at:new Date().toISOString()},{onConflict:'project_key'});if(error){status(error.message,'err');return}}localStorage.setItem(CACHE,JSON.stringify(data));status('All projects saved','ok')}
+async function saveAll(){
+  if(current&&data[current])collect();
+  for(const k of Object.keys(data)){
+    const {error}=await sb.from('project_configs').upsert({project_key:k,data:data[k],updated_at:new Date().toISOString()},{onConflict:'project_key'});
+    if(error){status(error.message,'err');return}
+  }
+  const {data:remote,error:readError}=await sb.from('project_configs').select('project_key');
+  if(readError){status(readError.message,'err');return}
+  const keep=new Set(Object.keys(data));
+  const removed=(remote||[]).map(r=>r.project_key).filter(k=>!keep.has(k));
+  if(removed.length){
+    const {error}=await sb.from('project_configs').delete().in('project_key',removed);
+    if(error){status(error.message,'err');return}
+  }
+  localStorage.setItem(CACHE,JSON.stringify(data));
+  status('All projects saved','ok');
+}
 async function exportIndex(){collect();if(!indexSource){try{indexSource=await (await fetch('index.html',{cache:'no-store'})).text()}catch(e){status('Could not read index.html','err');return}}const marker='const DEFAULT_PROJECT_DATA = ';const a=indexSource.indexOf(marker);const b=indexSource.indexOf('\n\n    let dashboardData',a);if(a<0||b<0){status('Index template marker not found','err');return}const replacement=marker+JSON.stringify(data,null,2)+';';const out=indexSource.slice(0,a)+replacement+indexSource.slice(b);const blob=new Blob([out],{type:'text/html;charset=utf-8'});const url=URL.createObjectURL(blob);const aEl=document.createElement('a');aEl.href=url;aEl.download='index.html';aEl.click();setTimeout(()=>URL.revokeObjectURL(url),1000);status('Updated index.html downloaded','ok')}
 sb.auth.getSession().then(({data:s})=>s.session?start():null);
 </script></body></html>
