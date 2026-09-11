@@ -20,7 +20,7 @@
   <div id="app" class="hidden">
     <div class="top"><div><h1>Project Admin</h1><p>Edit, add, or remove public projects and save them to Supabase, or export a new index.html.</p></div><div class="actions"><button class="secondary" onclick="location.href='index.html'">View site</button><button class="secondary" onclick="logout()">Sign out</button></div></div>
     <div class="notice">The public site uses the Supabase project list when available. If Supabase is unavailable, it uses the last successful local cache; if there is no cache, it uses the embedded defaults. Publishing an exported <b>index.html</b> makes the latest values part of the static file itself.</div>
-    <div class="card"><div class="section-title"><h2>Projects</h2><div class="actions"><button class="primary" onclick="addProject()">+ Add project</button><button class="danger" onclick="removeProject()">Remove current project</button></div></div><div class="muted" style="margin-bottom:10px">Projects are shown on the public site three per row.</div><div id="tabs" class="project-tabs"></div></div>
+    <div class="card"><div class="section-title"><h2>Projects</h2><div class="actions"><button class="primary" onclick="addProject()">+ Add project</button><button class="danger" onclick="removeProject()">Remove current project</button></div></div><div class="muted" style="margin-bottom:10px">Projects are shown on the public site three per row. Drag and drop the project tabs to change their order.</div><div id="tabs" class="project-tabs"></div></div>
     <div id="editor"></div>
     <div class="card"><div class="actions"><button class="primary" onclick="saveProject()">Save project to Supabase</button><button class="secondary" onclick="saveAll()">Save all projects</button><button class="secondary" onclick="exportIndex()">Download updated index.html</button></div><p class="muted" style="margin-bottom:0">Saving to Supabase changes the live site. Exporting creates a static copy you can upload over index.html.</p></div>
   </div>
@@ -40,8 +40,24 @@ const clone=o=>JSON.parse(JSON.stringify(o));
 function status(t,c=''){let e=document.getElementById('status');e.textContent=t;e.className='status '+c}
 async function login(){const {error}=await sb.auth.signInWithPassword({email:email.value.trim(),password:password.value});if(error){loginError.textContent=error.message;return}start()}
 async function logout(){await sb.auth.signOut();location.reload()}
-async function start(){loginCard.classList.add('hidden');app.classList.remove('hidden');data=clone(DEFAULTS);try{const c=JSON.parse(localStorage.getItem(CACHE)||'null');if(c&&typeof c==='object')data=c}catch(e){};const {data:rows,error}=await sb.from('project_configs').select('project_key,data');if(!error&&rows){data={};rows.forEach(r=>data[r.project_key]=r.data);localStorage.setItem(CACHE,JSON.stringify(data))}renderTabs();renderEditor();fetch('index.html',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(t=>{indexSource=t;const marker='const DEFAULT_PROJECT_DATA = ';const a=t.indexOf(marker);const b=t.indexOf('\n\n    let dashboardData',a);if(a>=0&&b>0){try{const expr=t.slice(a+marker.length,b).trim().replace(/;$/,'');const fromIndex=Function('return ('+expr+')')();data=Object.assign(data,fromIndex);localStorage.setItem(CACHE,JSON.stringify(data));renderTabs();renderEditor()}catch(e){console.warn('Could not parse index defaults',e)}}}).catch(()=>{});status(error?'Using local/default data':'Connected','ok')}
-function renderTabs(){tabs.innerHTML=Object.keys(data).map(k=>`<button class="secondary ${k===current?'active':''}" onclick="current='${k}';renderTabs();renderEditor()">${data[k].name||k}</button>`).join('')}
+async function start(){loginCard.classList.add('hidden');app.classList.remove('hidden');data=clone(DEFAULTS);try{const c=JSON.parse(localStorage.getItem(CACHE)||'null');if(c&&typeof c==='object')data=c}catch(e){};const {data:rows,error}=await sb.from('project_configs').select('project_key,data,sort_order').order('sort_order',{ascending:true,nullsFirst:false});if(!error&&rows){data={};rows.forEach(r=>data[r.project_key]=r.data);localStorage.setItem(CACHE,JSON.stringify(data))}renderTabs();renderEditor();fetch('index.html',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(t=>{indexSource=t;const marker='const DEFAULT_PROJECT_DATA = ';const a=t.indexOf(marker);const b=t.indexOf('\n\n    let dashboardData',a);if(a>=0&&b>0){try{const expr=t.slice(a+marker.length,b).trim().replace(/;$/,'');const fromIndex=Function('return ('+expr+')')();data=Object.assign(data,fromIndex);localStorage.setItem(CACHE,JSON.stringify(data));renderTabs();renderEditor()}catch(e){console.warn('Could not parse index defaults',e)}}}).catch(()=>{});status(error?'Using local/default data':'Connected','ok')}
+function renderTabs(){
+  tabs.innerHTML=Object.keys(data).map(k=>`<button type="button" class="secondary ${k===current?'active':''}" draggable="true" data-project-key="${k}" onclick="current='${k}';renderTabs();renderEditor()"><span class="drag-handle" title="Drag to reorder">☰</span>${data[k].name||k}</button>`).join('');
+  tabs.querySelectorAll('[data-project-key]').forEach(btn=>{
+    btn.addEventListener('dragstart',e=>{btn.classList.add('project-dragging');e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',btn.dataset.projectKey)});
+    btn.addEventListener('dragend',()=>btn.classList.remove('project-dragging'));
+    btn.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';btn.classList.add('project-drag-over')});
+    btn.addEventListener('dragleave',()=>btn.classList.remove('project-drag-over'));
+    btn.addEventListener('drop',e=>{
+      e.preventDefault();btn.classList.remove('project-drag-over');
+      const fromKey=e.dataTransfer.getData('text/plain'),toKey=btn.dataset.projectKey;
+      if(!fromKey||fromKey===toKey||!data[fromKey]||!data[toKey])return;
+      const ordered=Object.entries(data),fromIndex=ordered.findIndex(([k])=>k===fromKey),toIndex=ordered.findIndex(([k])=>k===toKey);
+      const [moved]=ordered.splice(fromIndex,1);ordered.splice(toIndex,0,moved);data=Object.fromEntries(ordered);
+      localStorage.setItem(CACHE,JSON.stringify(data));renderTabs();renderEditor();status('Project order changed — save all projects to publish','ok');
+    });
+  });
+}
 function makeProjectKey(name){
   const baseKey=String(name||'project').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'project';
   let key=baseKey,i=2;
@@ -95,20 +111,18 @@ function collect(){const d=data[current];d.name=f_name.value;d.badge=f_badge.val
 async function saveProject(){collect();const {error}=await sb.from('project_configs').upsert({project_key:current,data:data[current],updated_at:new Date().toISOString()},{onConflict:'project_key'});if(error){status(error.message,'err');return}localStorage.setItem(CACHE,JSON.stringify(data));status('Project saved','ok')}
 async function saveAll(){
   if(current&&data[current])collect();
-  for(const k of Object.keys(data)){
-    const {error}=await sb.from('project_configs').upsert({project_key:k,data:data[k],updated_at:new Date().toISOString()},{onConflict:'project_key'});
+  const orderedKeys=Object.keys(data);
+  for(let i=0;i<orderedKeys.length;i++){
+    const k=orderedKeys[i];
+    const {error}=await sb.from('project_configs').upsert({project_key:k,data:data[k],sort_order:i,updated_at:new Date().toISOString()},{onConflict:'project_key'});
     if(error){status(error.message,'err');return}
   }
   const {data:remote,error:readError}=await sb.from('project_configs').select('project_key');
   if(readError){status(readError.message,'err');return}
-  const keep=new Set(Object.keys(data));
+  const keep=new Set(orderedKeys);
   const removed=(remote||[]).map(r=>r.project_key).filter(k=>!keep.has(k));
-  if(removed.length){
-    const {error}=await sb.from('project_configs').delete().in('project_key',removed);
-    if(error){status(error.message,'err');return}
-  }
-  localStorage.setItem(CACHE,JSON.stringify(data));
-  status('All projects saved','ok');
+  if(removed.length){const {error}=await sb.from('project_configs').delete().in('project_key',removed);if(error){status(error.message,'err');return}}
+  localStorage.setItem(CACHE,JSON.stringify(data));status('All projects saved','ok');
 }
 async function exportIndex(){collect();if(!indexSource){try{indexSource=await (await fetch('index.html',{cache:'no-store'})).text()}catch(e){status('Could not read index.html','err');return}}const marker='const DEFAULT_PROJECT_DATA = ';const a=indexSource.indexOf(marker);const b=indexSource.indexOf('\n\n    let dashboardData',a);if(a<0||b<0){status('Index template marker not found','err');return}const replacement=marker+JSON.stringify(data,null,2)+';';const out=indexSource.slice(0,a)+replacement+indexSource.slice(b);const blob=new Blob([out],{type:'text/html;charset=utf-8'});const url=URL.createObjectURL(blob);const aEl=document.createElement('a');aEl.href=url;aEl.download='index.html';aEl.click();setTimeout(()=>URL.revokeObjectURL(url),1000);status('Updated index.html downloaded','ok')}
 sb.auth.getSession().then(({data:s})=>s.session?start():null);
